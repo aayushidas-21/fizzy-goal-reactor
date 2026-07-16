@@ -3,32 +3,43 @@
 <head>
   <meta charset="UTF-8">
   <script>
+    window.errorsList = [];
     window.onerror = function(message, source, lineno, colno, error) {
-      const div = document.createElement('div');
-      div.style.position = 'fixed';
-      div.style.top = '10px';
-      div.style.left = '10px';
-      div.style.right = '10px';
-      div.style.background = 'rgba(255, 0, 0, 0.95)';
-      div.style.color = 'white';
-      div.style.padding = '20px';
-      div.style.zIndex = '99999';
-      div.style.fontSize = '14px';
-      div.style.fontFamily = 'monospace';
-      div.style.borderRadius = '10px';
-      div.style.boxShadow = '0 10px 30px rgba(0,0,0,0.5)';
-      div.style.whiteSpace = 'pre-wrap';
+      window.errorsList.push({message, source, lineno, colno, error});
+      
+      let debugDiv = document.getElementById('debugErrorOverlay');
+      if (!debugDiv) {
+        debugDiv = document.createElement('div');
+        debugDiv.id = 'debugErrorOverlay';
+        debugDiv.style.position = 'fixed';
+        debugDiv.style.top = '10px';
+        debugDiv.style.left = '10px';
+        debugDiv.style.right = '10px';
+        debugDiv.style.background = 'rgba(255, 0, 0, 0.95)';
+        debugDiv.style.color = 'white';
+        debugDiv.style.padding = '20px';
+        debugDiv.style.zIndex = '99999';
+        debugDiv.style.fontSize = '14px';
+        debugDiv.style.fontFamily = 'monospace';
+        debugDiv.style.borderRadius = '10px';
+        debugDiv.style.boxShadow = '0 10px 30px rgba(0,0,0,0.5)';
+        debugDiv.style.whiteSpace = 'pre-wrap';
+        document.body.appendChild(debugDiv);
+      }
+      
       const statusHtml = '<br><br><strong>🔍 Global Status Check:</strong><br>' +
                          '• window.FizzyStore: ' + (typeof window.FizzyStore) + '<br>' +
                          '• window.FizzyAudio: ' + (typeof window.FizzyAudio) + '<br>' +
                          '• window.FizzyReactor: ' + (typeof window.FizzyReactor) + '<br>' +
                          '• window.FocusCoolantPump: ' + (typeof window.FocusCoolantPump) + '<br>' +
                          '• Document ReadyState: ' + document.readyState;
-      div.innerHTML = '<strong>🚨 RUNTIME ERROR DETECTED:</strong><br><br>' + 
-                      message + '<br>at ' + source + ':' + lineno + ':' + colno + 
-                      (error && error.stack ? '<br><br><strong>Stack:</strong><br>' + error.stack : '') +
-                      statusHtml;
-      document.body.appendChild(div);
+                         
+      let errorItemsHtml = '';
+      window.errorsList.forEach((err, idx) => {
+        errorItemsHtml += `<strong>🚨 ERROR #${idx+1}:</strong> ${err.message}<br>at ${err.source}:${err.lineno}:${err.colno}<br><br>`;
+      });
+      
+      debugDiv.innerHTML = errorItemsHtml + statusHtml;
       return false;
     };
     window.onunhandledrejection = function(event) {
