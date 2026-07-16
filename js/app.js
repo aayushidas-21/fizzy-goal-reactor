@@ -1,6 +1,9 @@
 // APPLICATION ORCHESTRATION AND CONTROLLERS (APP)
 
-document.addEventListener('DOMContentLoaded', () => {
+function initApp() {
+  const FizzyStore = window.FizzyStore;
+  const FizzyAudio = window.FizzyAudio;
+
   // Initialize instances
   const reactor = new FizzyReactor('fluidCanvas', 'reactorChamber', 'bubbleLayer');
   window.reactorInstance = reactor;
@@ -625,4 +628,10 @@ document.addEventListener('DOMContentLoaded', () => {
       card.style.boxShadow = 'var(--clay-shadow)';
     });
   });
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}
