@@ -3,6 +3,8 @@
 function initApp() {
   const FizzyStore = window.FizzyStore;
   const FizzyAudio = window.FizzyAudio;
+  const FizzyReactor = window.FizzyReactor;
+  const FocusCoolantPump = window.FocusCoolantPump;
 
   // Initialize instances
   const reactor = new FizzyReactor('fluidCanvas', 'reactorChamber', 'bubbleLayer');
