@@ -18,9 +18,16 @@
       div.style.borderRadius = '10px';
       div.style.boxShadow = '0 10px 30px rgba(0,0,0,0.5)';
       div.style.whiteSpace = 'pre-wrap';
+      const statusHtml = '<br><br><strong>🔍 Global Status Check:</strong><br>' +
+                         '• window.FizzyStore: ' + (typeof window.FizzyStore) + '<br>' +
+                         '• window.FizzyAudio: ' + (typeof window.FizzyAudio) + '<br>' +
+                         '• window.FizzyReactor: ' + (typeof window.FizzyReactor) + '<br>' +
+                         '• window.FocusCoolantPump: ' + (typeof window.FocusCoolantPump) + '<br>' +
+                         '• Document ReadyState: ' + document.readyState;
       div.innerHTML = '<strong>🚨 RUNTIME ERROR DETECTED:</strong><br><br>' + 
                       message + '<br>at ' + source + ':' + lineno + ':' + colno + 
-                      (error && error.stack ? '<br><br><strong>Stack:</strong><br>' + error.stack : '');
+                      (error && error.stack ? '<br><br><strong>Stack:</strong><br>' + error.stack : '') +
+                      statusHtml;
       document.body.appendChild(div);
       return false;
     };
