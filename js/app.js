@@ -3,14 +3,12 @@
 function initApp() {
   const FizzyStore = window.FizzyStore;
   const FizzyAudio = window.FizzyAudio;
-  const FizzyReactor = window.FizzyReactor;
-  const FocusCoolantPump = window.FocusCoolantPump;
 
   // Initialize instances
-  const reactor = new FizzyReactor('fluidCanvas', 'reactorChamber', 'bubbleLayer');
+  const reactor = new window.FizzyReactor('fluidCanvas', 'reactorChamber', 'bubbleLayer');
   window.reactorInstance = reactor;
 
-  const focusPump = new FocusCoolantPump('focusPumpBtn', 'focusTimerText', 'focusTimerSub');
+  const focusPump = new window.FocusCoolantPump('focusPumpBtn', 'focusTimerText', 'focusTimerSub');
   window.focusPumpInstance = focusPump;
 
   // Cache DOM Elements
