@@ -1,0 +1,459 @@
+/* MAIN CSS Overhaul for Bubbly Console Aesthetic */
+
+:root {
+  /* Colors */
+  --bg-deep: #090a16;
+  --bg-card: rgba(22, 28, 59, 0.55);
+  --bg-card-hover: rgba(28, 35, 74, 0.7);
+  --bg-border: rgba(255, 255, 255, 0.12);
+  
+  --text-main: #f1f5f9;
+  --text-muted: #8d9bbd;
+  
+  /* Soda Neon Flavors */
+  --color-peach: #ffa07a;
+  --color-mint: #00f5a0;
+  --color-cherry: #ff5e7e;
+  --color-grape: #d352ff;
+  --color-lime: #a3ff33;
+  
+  /* Indicators */
+  --color-primary: #3db8ff;
+  --color-secondary: #00f5a0;
+  --color-accent: #ffd166;
+  --color-warning: #ffaa3b;
+  --color-danger: #ff4766;
+  --color-success: #07da97;
+
+  /* Claymorphic Aesthetics (Very puffy, bubbly, soft-edge 3D feel) */
+  --clay-radius: 28px;
+  --clay-shadow: 
+    0 15px 30px rgba(0, 0, 0, 0.55),
+    inset 4px 4px 8px rgba(255, 255, 255, 0.1),
+    inset -4px -4px 8px rgba(0, 0, 0, 0.45);
+  --clay-shadow-button: 
+    0 8px 16px rgba(0, 0, 0, 0.4),
+    inset 4px 4px 8px rgba(255, 255, 255, 0.25),
+    inset -4px -4px 8px rgba(0, 0, 0, 0.35);
+  --clay-shadow-button-active: 
+    0 2px 4px rgba(0, 0, 0, 0.5),
+    inset 2px 2px 4px rgba(255, 255, 255, 0.15),
+    inset -2px -2px 4px rgba(0, 0, 0, 0.5);
+  --clay-border: 4px solid var(--bg-border);
+  
+  --blur-glass: blur(18px);
+}
+
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  user-select: none;
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background-color: var(--bg-deep);
+  color: var(--text-main);
+  overflow-x: hidden;
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Aurora Backdrop (Glowing background) */
+.aurora-glow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -2;
+  pointer-events: none;
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(13, 245, 160, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(61, 184, 255, 0.08) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(255, 94, 126, 0.04) 0%, transparent 35%);
+  transition: background 1.5s ease;
+}
+
+.bg-bubbles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.bg-bubble {
+  position: absolute;
+  bottom: -100px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: floatUp 16s infinite linear;
+  box-shadow: inset 1px 1px 3px rgba(255,255,255,0.1);
+}
+
+/* Layout container */
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  max-width: 1440px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 24px;
+  gap: 20px;
+}
+
+/* App Header */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-card);
+  border: var(--clay-border);
+  box-shadow: var(--clay-shadow);
+  border-radius: var(--clay-radius);
+  backdrop-filter: var(--blur-glass);
+  padding: 16px 32px;
+  gap: 24px;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.logo-icon-container {
+  position: relative;
+  width: 44px;
+  height: 44px;
+}
+
+.logo-bubble {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3) 0%, var(--color-primary) 60%, rgba(0,0,0,0.3) 100%);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  animation: bounce 3s infinite ease-in-out;
+}
+
+.logo-emoji {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.3rem;
+}
+
+.logo-text h1 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-mint));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.logo-text span {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 600;
+}
+
+/* Center Stability indicator in header */
+.reactor-health-bar-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 320px;
+}
+
+.health-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.health-label { color: var(--text-muted); }
+.health-val { color: var(--color-secondary); font-weight: 800; }
+
+.health-track {
+  height: 12px;
+  background: rgba(0,0,0,0.3);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: inset 1px 1px 3px rgba(0,0,0,0.4);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.health-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-secondary), var(--color-primary));
+  border-radius: 20px;
+  transition: width 0.5s ease, background 0.5s ease;
+}
+
+/* Dashboard Grid (Left, Center, Right) */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 280px 1fr 300px;
+  gap: 24px;
+  flex: 1;
+  align-items: start;
+}
+
+@media (max-width: 1080px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .reactor-center {
+    grid-column: 1 / span 2;
+    order: -1;
+  }
+}
+
+@media (max-width: 700px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+  .reactor-center {
+    grid-column: 1;
+  }
+}
+
+/* Sidebar Panels */
+.dashboard-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Claymorphic Card design */
+.clay-card {
+  background: var(--bg-card);
+  border: var(--clay-border);
+  box-shadow: var(--clay-shadow);
+  border-radius: var(--clay-radius);
+  backdrop-filter: var(--blur-glass);
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.clay-card:hover {
+  background-color: var(--bg-card-hover);
+}
+
+.card-header h4 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+}
+
+.card-header p {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* Form Styles inside Modals */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(5, 7, 16, 0.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  transition: opacity 0.3s ease;
+}
+
+.modal-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.modal-card {
+  background: #0d1021;
+  border: 4px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
+  border-radius: 36px;
+  width: 90%;
+  max-width: 580px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 32px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  animation: modalPopIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-header h2 {
+  font-size: 1.55rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.close-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: none;
+  color: var(--text-muted);
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, color 0.2s;
+}
+
+.close-btn:hover {
+  background: var(--color-cherry);
+  color: white;
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+}
+
+.form-group.col {
+  flex: 1;
+}
+
+input[type="text"],
+input[type="datetime-local"],
+select {
+  background: rgba(0, 0, 0, 0.35);
+  border: 3px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  padding: 14px 18px;
+  color: white;
+  font-family: inherit;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input[type="text"]:focus,
+input[type="datetime-local"]:focus,
+select:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px rgba(61, 184, 255, 0.15);
+}
+
+/* Flavor Selector Radios */
+.flavor-selector {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 10px;
+  border-radius: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.05);
+}
+
+.flavor-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  flex: 1;
+  position: relative;
+}
+
+.flavor-option input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.flavor-ball {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  transition: transform 0.2s, border-color 0.2s;
+  box-shadow: inset 2px 2px 4px rgba(255,255,255,0.4), inset -2px -2px 4px rgba(0,0,0,0.5);
+}
+
+.peach-flavor .flavor-ball { background: radial-gradient(circle at 30% 30%, #ffd0c1, var(--color-peach)); }
+.mint-flavor .flavor-ball { background: radial-gradient(circle at 30% 30%, #abffd9, var(--color-mint)); }
+.cherry-flavor .flavor-ball { background: radial-gradient(circle at 30% 30%, #ff9ebb, var(--color-cherry)); }
+.grape-flavor .flavor-ball { background: radial-gradient(circle at 30% 30%, #f79ce5, var(--color-grape)); }
+.lime-flavor .flavor-ball { background: radial-gradient(circle at 30% 30%, #c5ff6c, var(--color-lime)); }
+
+.flavor-option input:checked + .flavor-ball {
+  transform: scale(1.18);
+  border-color: white;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+}
+
+.flavor-name {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.flavor-option input:checked ~ .flavor-name {
+  color: white;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.text-glow {
+  text-shadow: 0 0 8px rgba(61, 184, 255, 0.6);
+}
