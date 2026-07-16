@@ -23,11 +23,15 @@ class FizzyStoreClass {
       if (data) {
         const parsed = JSON.parse(data);
         // Clean up parsed dates back to integers
-        parsed.goals = parsed.goals.map(g => ({
-          ...g,
-          createdAt: Number(g.createdAt),
-          deadline: Number(g.deadline)
-        }));
+        if (parsed && Array.isArray(parsed.goals)) {
+          parsed.goals = parsed.goals.map(g => ({
+            ...g,
+            createdAt: Number(g.createdAt),
+            deadline: Number(g.deadline)
+          }));
+        } else {
+          if (parsed) parsed.goals = [];
+        }
         return { ...initialStore, ...parsed };
       }
     } catch (e) {
