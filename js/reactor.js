@@ -271,8 +271,11 @@ class FizzyReactor {
     for (let i = 0; i < length; i++) {
       const b1 = this.bubbles[i];
 
-      // Add buoyancy/equilibrium restorative forces
+      // Add buoyancy (Y) and horizontal centering (X) restorative forces
+      const centerX = this.width / 2;
+      const forceX = (centerX - b1.x) * 0.012; // gentle horizontal pull
       const forceY = (b1.targetY - b1.y) * 0.015;
+      b1.vx += forceX;
       b1.vy += forceY;
 
       // Drag
