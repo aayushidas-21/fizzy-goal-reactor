@@ -2,6 +2,48 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <script>
+    window.onerror = function(message, source, lineno, colno, error) {
+      const div = document.createElement('div');
+      div.style.position = 'fixed';
+      div.style.top = '10px';
+      div.style.left = '10px';
+      div.style.right = '10px';
+      div.style.background = 'rgba(255, 0, 0, 0.95)';
+      div.style.color = 'white';
+      div.style.padding = '20px';
+      div.style.zIndex = '99999';
+      div.style.fontSize = '14px';
+      div.style.fontFamily = 'monospace';
+      div.style.borderRadius = '10px';
+      div.style.boxShadow = '0 10px 30px rgba(0,0,0,0.5)';
+      div.style.whiteSpace = 'pre-wrap';
+      div.innerHTML = '<strong>🚨 RUNTIME ERROR DETECTED:</strong><br><br>' + 
+                      message + '<br>at ' + source + ':' + lineno + ':' + colno + 
+                      (error && error.stack ? '<br><br><strong>Stack:</strong><br>' + error.stack : '');
+      document.body.appendChild(div);
+      return false;
+    };
+    window.onunhandledrejection = function(event) {
+      const div = document.createElement('div');
+      div.style.position = 'fixed';
+      div.style.top = '10px';
+      div.style.left = '10px';
+      div.style.right = '10px';
+      div.style.background = 'rgba(255, 0, 0, 0.95)';
+      div.style.color = 'white';
+      div.style.padding = '20px';
+      div.style.zIndex = '99999';
+      div.style.fontSize = '14px';
+      div.style.fontFamily = 'monospace';
+      div.style.borderRadius = '10px';
+      div.style.boxShadow = '0 10px 30px rgba(0,0,0,0.5)';
+      div.style.whiteSpace = 'pre-wrap';
+      div.innerHTML = '<strong>🚨 UNHANDLED REJECTION DETECTED:</strong><br><br>' + 
+                      event.reason;
+      document.body.appendChild(div);
+    };
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Fizzy — Bubbly Goal Reactor</title>
   <!-- Outfit Google Font -->
