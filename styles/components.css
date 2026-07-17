@@ -705,3 +705,30 @@
   opacity: 0.75;
   transform: scale(1.05);
 }
+
+/* Flavor Selector Dynamic Description Box */
+.flavor-desc-box {
+  margin-top: 12px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 3px solid rgba(255, 255, 255, 0.05);
+  border-radius: 18px;
+  padding: 12px 18px;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  box-shadow: inset 2px 2px 5px rgba(0,0,0,0.5);
+  transition: all 0.2s ease;
+}
+
+.flavor-desc-item {
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: var(--text-muted);
+  animation: fadeIn 0.25s ease-in-out;
+}
+
+.flavor-desc-item strong {
+  color: white;
+  margin-right: 4px;
+  font-weight: 800;
+}

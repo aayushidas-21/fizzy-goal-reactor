@@ -334,6 +334,33 @@ function initApp() {
     }
   });
 
+  // Dynamic Soda Flavor Description Toggler
+  const flavorRadios = document.querySelectorAll('input[name="goalFlavor"]');
+  const flavorDescItems = document.querySelectorAll('.flavor-desc-item');
+  
+  flavorRadios.forEach(radio => {
+    radio.addEventListener('change', (e) => {
+      const selectedFlavor = e.target.value;
+      flavorDescItems.forEach(item => {
+        if (item.id === `desc-${selectedFlavor}`) {
+          item.classList.remove('hidden');
+        } else {
+          item.classList.add('hidden');
+        }
+      });
+    });
+  });
+
+  createGoalForm.addEventListener('reset', () => {
+    flavorDescItems.forEach(item => {
+      if (item.id === 'desc-peach') {
+        item.classList.remove('hidden');
+      } else {
+        item.classList.add('hidden');
+      }
+    });
+  });
+
   createGoalForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const title = document.getElementById('goalTitle').value.trim();
