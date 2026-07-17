@@ -218,8 +218,14 @@ function initApp() {
       // Spawn massive explosion visual at the top center of the beaker
       poppedList.forEach(g => {
         if (reactor) {
+          const radius = g.weight === 1 ? 36 : g.weight === 2 ? 50 : 64;
+          const centerY = reactor.height / 2;
+          const coreRadius = (reactor.width / 2) - 16;
+          const maxDist = coreRadius - radius;
+          
           const rx = reactor.width / 2;
-          const ry = 45;
+          const ry = centerY - maxDist + 8;
+          
           // Spawn multiple layers of particles and steam
           reactor.createPopVisual(rx, ry, g.flavor);
           reactor.createPopVisual(rx, ry, g.flavor); // double layer for drama

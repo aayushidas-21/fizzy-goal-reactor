@@ -284,14 +284,18 @@ class FizzyReactor {
       let buoyancyMultiplier = 0.015;
 
       if (b1.isExploding || b1.pressure >= 70) {
-        // Forcefully snap to the top center of the beaker!
-        targetY = 45;
-        centeringMultiplier = 0.35; // extremely strong centering spring
-        buoyancyMultiplier = 0.35;  // extremely strong upward spring
+        // Target exactly the top-center point inside the circular boundary to resolve curved ceiling vector lock
+        const centerY = this.height / 2;
+        const coreRadius = (this.width / 2) - 16;
+        const maxDist = coreRadius - b1.r;
+        
+        targetY = centerY - maxDist + 8; // snap exactly to the top center ceiling
+        centeringMultiplier = 0.35; // strong centering spring
+        buoyancyMultiplier = 0.35;  // strong upward spring
         
         // Damp existing velocities so it doesn't overshoot or drift to sides
-        b1.vx *= 0.3;
-        b1.vy *= 0.3;
+        b1.vx *= 0.25;
+        b1.vy *= 0.25;
         
         // Fast, tight visual jitter (vibrates in place)
         const shakeIntensity = b1.isExploding ? 2.5 : 1.2;
