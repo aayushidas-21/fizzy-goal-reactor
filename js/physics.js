@@ -284,14 +284,18 @@ class FizzyReactor {
       let buoyancyMultiplier = 0.015;
 
       if (b1.isExploding) {
-        // Pull strongly to the top center of the beaker!
+        // Forcefully snap to the top center of the beaker!
         targetY = 45;
-        centeringMultiplier = 0.08;
-        buoyancyMultiplier = 0.08;
+        centeringMultiplier = 0.35; // extremely strong centering spring
+        buoyancyMultiplier = 0.35;  // extremely strong upward spring
         
-        // Add violent shake
-        b1.vx += (Math.random() - 0.5) * 5.0;
-        b1.vy += (Math.random() - 0.5) * 5.0;
+        // Damp existing velocities so it doesn't overshoot or drift to sides
+        b1.vx *= 0.3;
+        b1.vy *= 0.3;
+        
+        // Fast, tight visual jitter instead of large drifting velocities
+        b1.vx += (Math.random() - 0.5) * 2.0;
+        b1.vy += (Math.random() - 0.5) * 2.0;
       } else if (b1.pressure >= 80) {
         // Mild warning shake
         b1.vx += (Math.random() - 0.5) * 0.8;

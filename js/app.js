@@ -294,7 +294,7 @@ function initApp() {
         
         foamStainsContainer.appendChild(stain);
       }
-    }, 5000);
+    }, 3000);
   }
 
   // --- GOAL CREATION ---
