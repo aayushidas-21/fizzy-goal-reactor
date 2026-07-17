@@ -201,6 +201,24 @@ class FizzyReactor {
       b.pressure = g.pressure || 0;
       b.isExploding = g.isExploding || false;
 
+      // Dynamic inflation scaling based on pressure and exploding state
+      const baseRadius = g.weight === 1 ? 36 : g.weight === 2 ? 50 : 64;
+      b.baseRadius = baseRadius;
+      
+      let scaleFactor = 1.0;
+      if (g.isExploding) {
+        // Inflate up to 1.55x during final 2.5s explosion countdown
+        const elapsed = Date.now() - (g.explosionStartTime || Date.now());
+        const progress = Math.min(1.0, elapsed / 2500);
+        scaleFactor = 1.0 + (progress * 0.55);
+      } else if (g.pressure >= 70) {
+        // Inflate up to 1.25x based on danger pressure buildup
+        const t = (g.pressure - 70) / 30; // 0 to 1
+        scaleFactor = 1.0 + (t * 0.25);
+      }
+      
+      b.r = baseRadius * scaleFactor;
+
       // Create DOM element if not exist
       if (!this.bubbleMap.has(g.id)) {
         const bubbleEl = document.createElement('button');
@@ -284,16 +302,8 @@ class FizzyReactor {
       let buoyancyMultiplier = 0.015;
 
       if (b1.isExploding || b1.pressure >= 70) {
-        // Target exactly the top-center point inside the circular boundary to resolve curved ceiling vector lock
-        const centerY = this.height / 2;
-        const coreRadius = (this.width / 2) - 16;
-        const maxDist = coreRadius - b1.r;
-        
-        targetY = centerY - maxDist + 8; // snap exactly to the top center ceiling
-        centeringMultiplier = 0.35; // strong centering spring
-        buoyancyMultiplier = 0.35;  // strong upward spring
-        
-        // Damp existing velocities so it doesn't overshoot or drift to sides
+        // Vibrate in its current equilibrium position
+        // Damp existing velocities so it doesn't drift away
         b1.vx *= 0.25;
         b1.vy *= 0.25;
         
@@ -396,8 +406,14 @@ class FizzyReactor {
         const scaleX = 1 + squish;
         const scaleY = 1 - squish;
 
+        // Apply dynamic inflation scaling
+        const baseRad = b.baseRadius || b.r;
+        const inflationScale = b.r / baseRad;
+        const finalScaleX = scaleX * inflationScale;
+        const finalScaleY = scaleY * inflationScale;
+
         // Position using hardware-accelerated 3D transforms
-        el.style.transform = `translate3d(${b.x - b.r}px, ${b.y - b.r}px, 0) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale3d(${scaleX}, ${scaleY}, 1)`;
+        el.style.transform = `translate3d(${b.x - b.r}px, ${b.y - b.r}px, 0) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale3d(${finalScaleX}, ${finalScaleY}, 1)`;
       }
     });
   }

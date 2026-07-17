@@ -226,3 +226,22 @@
   80% { transform: translate(2px, 2px) rotate(1deg); }
   90% { transform: translate(-1px, -2px) rotate(0deg); }
 }
+
+/* Viscous Soda Splash Slide-Down Drip */
+@keyframes sodaSplashDrip {
+  0% {
+    transform: translateY(-100%);
+    border-bottom-left-radius: 60% 40px;
+    border-bottom-right-radius: 60% 40px;
+  }
+  65% {
+    transform: translateY(0);
+    border-bottom-left-radius: 20% 15px;
+    border-bottom-right-radius: 20% 15px;
+  }
+  100% {
+    transform: translateY(0);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+}
