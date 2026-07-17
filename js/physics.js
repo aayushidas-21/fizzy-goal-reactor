@@ -200,16 +200,6 @@ class FizzyReactor {
       // Update runtime parameters
       b.pressure = g.pressure || 0;
       b.isExploding = g.isExploding || false;
-      
-      if (b.isExploding) {
-        if (b.lockX === undefined) {
-          b.lockX = b.x;
-          b.lockY = b.y;
-        }
-      } else {
-        delete b.lockX;
-        delete b.lockY;
-      }
 
       // Dynamic inflation scaling based on pressure and exploding state
       const baseRadius = g.weight === 1 ? 36 : g.weight === 2 ? 50 : 64;
@@ -306,13 +296,22 @@ class FizzyReactor {
     for (let i = 0; i < length; i++) {
       const b1 = this.bubbles[i];
 
-      if (b1.isExploding && b1.lockX !== undefined && b1.lockY !== undefined) {
+      if (b1.isExploding) {
+        if (b1.lockX === undefined || isNaN(b1.lockX) || b1.lockX <= 0) {
+          const defaultX = this.width > 0 ? this.width / 2 : 220;
+          const defaultY = this.height > 0 ? this.height / 2 : 220;
+          b1.lockX = (isNaN(b1.x) || b1.x <= 0) ? defaultX : b1.x;
+          b1.lockY = (isNaN(b1.y) || b1.y <= 0) ? defaultY : b1.y;
+        }
         const shakeIntensity = 2.5;
         b1.x = b1.lockX + (Math.random() - 0.5) * shakeIntensity;
         b1.y = b1.lockY + (Math.random() - 0.5) * shakeIntensity;
         b1.vx = 0;
         b1.vy = 0;
         continue;
+      } else {
+        delete b1.lockX;
+        delete b1.lockY;
       }
 
       // Add buoyancy (Y) and horizontal centering (X) restorative forces
