@@ -330,7 +330,6 @@ function initApp() {
     } else {
       if (profileSetupSec) profileSetupSec.classList.remove('hidden');
       if (profileDisplaySec) profileDisplaySec.classList.add('hidden');
-      if (researcherNameInput) researcherNameInput.value = '';
     }
 
     if (statGoalsPopped) statGoalsPopped.innerText = state.stats?.goalsPopped || 0;
@@ -829,6 +828,7 @@ function initApp() {
   if (editProfileBtn) {
     editProfileBtn.addEventListener('click', () => {
       FizzyStore.state.researcherName = '';
+      if (researcherNameInput) researcherNameInput.value = '';
       FizzyStore.saveState();
       FizzyAudio.playPop();
     });
