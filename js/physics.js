@@ -178,17 +178,20 @@ class FizzyReactor {
         // Size mapping based on weight (scaled down for circular chamber)
         const radius = g.weight === 1 ? 36 : g.weight === 2 ? 50 : 64;
         
-        // Spawn randomly near the middle
+        // Spawn exactly at the horizontal center near the bottom of the beaker (floating up)
+        const spawnX = this.width > 0 ? this.width / 2 : 220;
+        const spawnY = this.height > 0 ? this.height - radius - 25 : 380;
+        
         b = {
           id: g.id,
-          x: this.width / 2 + (Math.random() - 0.5) * 50,
-          y: this.height / 2 + (Math.random() - 0.5) * 50,
-          vx: (Math.random() - 0.5) * 2,
-          vy: -2 - Math.random() * 2,
+          x: spawnX,
+          y: spawnY,
+          vx: 0, // no horizontal drift on start
+          vy: -1.8, // float straight up
           r: radius,
           weight: g.weight,
           // Float height targets (Giants stay low, smalls float high)
-          targetY: this.height * (g.weight === 3 ? 0.65 : g.weight === 2 ? 0.48 : 0.3)
+          targetY: (this.height > 0 ? this.height : 440) * (g.weight === 3 ? 0.65 : g.weight === 2 ? 0.48 : 0.3)
         };
         
         this.bubbles.push(b);
