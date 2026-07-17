@@ -69,9 +69,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="styles/main.css?v=17">
-  <link rel="stylesheet" href="styles/components.css?v=17">
-  <link rel="stylesheet" href="styles/animations.css?v=17">
+  <link rel="stylesheet" href="styles/main.css?v=18">
+  <link rel="stylesheet" href="styles/components.css?v=18">
+  <link rel="stylesheet" href="styles/animations.css?v=18">
 </head>
 <body>
 
@@ -262,6 +262,39 @@
             <div class="stat-box">
               <span class="stat-num" id="statGoldSpent">0</span>
               <span class="stat-lbl">Gold Spent</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Lab Station Analytics SVG Line Chart -->
+        <div class="analytics-section">
+          <h5>Station Core Stability (Last 7 Days)</h5>
+          <div class="chart-wrapper">
+            <svg id="analyticsChart" viewBox="0 0 320 120" width="100%" height="120">
+              <!-- Grid lines -->
+              <line x1="20" y1="20" x2="300" y2="20" stroke="rgba(255,255,255,0.06)" stroke-width="1" stroke-dasharray="3,3"></line>
+              <line x1="20" y1="60" x2="300" y2="60" stroke="rgba(255,255,255,0.06)" stroke-width="1" stroke-dasharray="3,3"></line>
+              <line x1="20" y1="100" x2="300" y2="100" stroke="rgba(255,255,255,0.06)" stroke-width="1" stroke-dasharray="3,3"></line>
+              
+              <!-- Neon area fill -->
+              <path id="chartArea" fill="url(#chartGrad)" opacity="0.18" d="M 20,100 L 300,100 Z"></path>
+              <!-- Neon stroke line -->
+              <path id="chartPath" fill="none" stroke="var(--color-secondary)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" d="M 20,100 L 300,100"></path>
+              
+              <!-- Dots and values hover tags group -->
+              <g id="chartDots"></g>
+
+              <defs>
+                <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="var(--color-secondary)" stop-opacity="0.8"></stop>
+                  <stop offset="100%" stop-color="var(--color-secondary)" stop-opacity="0.0"></stop>
+                </linearGradient>
+              </defs>
+            </svg>
+            <div class="chart-labels">
+              <span>7d ago</span>
+              <span class="active-chart-stability">Core Status: <span id="chartStabilityVal">100</span>%</span>
+              <span>Today</span>
             </div>
           </div>
         </div>
@@ -529,10 +562,10 @@
   <!-- 3D Bubbly Toast Notification Container -->
   <div id="toastContainer" class="toast-container"></div>
 
-  <script src="js/store.js?v=17"></script>
-  <script src="js/audio.js?v=17"></script>
-  <script src="js/physics.js?v=17"></script>
-  <script src="js/components/focusPump.js?v=17"></script>
-  <script src="js/app.js?v=17"></script>
+  <script src="js/store.js?v=18"></script>
+  <script src="js/audio.js?v=18"></script>
+  <script src="js/physics.js?v=18"></script>
+  <script src="js/components/focusPump.js?v=18"></script>
+  <script src="js/app.js?v=18"></script>
 </body>
 </html>

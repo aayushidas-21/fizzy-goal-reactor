@@ -28,6 +28,7 @@ const initialStore = {
     coolantsFlooded: 0,
     goldSpent: 0
   },
+  stabilityHistory: [100, 100, 100, 100, 100, 100, 100],
   lastUpdate: Date.now()
 };
 
@@ -58,6 +59,7 @@ class FizzyStoreClass {
         merged.activeModifiers = { ...initialStore.activeModifiers, ...parsed.activeModifiers };
         merged.stats = { ...initialStore.stats, ...parsed.stats };
         merged.unlockedThemes = Array.isArray(parsed.unlockedThemes) ? parsed.unlockedThemes : [...initialStore.unlockedThemes];
+        merged.stabilityHistory = Array.isArray(parsed.stabilityHistory) ? parsed.stabilityHistory : [...initialStore.stabilityHistory];
         return merged;
       }
     } catch (e) {
@@ -66,8 +68,17 @@ class FizzyStoreClass {
     return { ...initialStore };
   }
 
+  updateStabilityHistory() {
+    if (!this.state.stabilityHistory || !Array.isArray(this.state.stabilityHistory)) {
+      this.state.stabilityHistory = [100, 100, 100, 100, 100, 100, 100];
+    }
+    // Mirror the current stability value at the end of the history array
+    this.state.stabilityHistory[this.state.stabilityHistory.length - 1] = this.state.stability;
+  }
+
   saveState() {
     try {
+      this.updateStabilityHistory();
       localStorage.setItem(STORAGE_KEY, JSON.stringify(this.state));
       this.notifyListeners();
     } catch (e) {
@@ -339,6 +350,35 @@ class FizzyStoreClass {
     return anyPoppedThisTick;
   }
 
+  advanceDailyStabilityHistory(todayStr) {
+    if (!this.state.stabilityHistory || !Array.isArray(this.state.stabilityHistory)) {
+      this.state.stabilityHistory = [100, 100, 100, 100, 100, 100, 100];
+    }
+    const lastDateStr = this.state.lastActiveDate;
+    if (!lastDateStr || lastDateStr === todayStr) return;
+
+    try {
+      const lastParts = lastDateStr.split('-');
+      const todayParts = todayStr.split('-');
+      const lastDate = new Date(lastParts[0], lastParts[1]-1, lastParts[2]);
+      const todayDate = new Date(todayParts[0], todayParts[1]-1, todayParts[2]);
+      
+      const diffTime = Math.abs(todayDate - lastDate);
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      
+      if (diffDays > 0) {
+        for (let i = 0; i < Math.min(diffDays, 7); i++) {
+          this.state.stabilityHistory.push(this.state.stability);
+          if (this.state.stabilityHistory.length > 7) {
+            this.state.stabilityHistory.shift();
+          }
+        }
+      }
+    } catch (e) {
+      console.error("Error shifting stability history:", e);
+    }
+  }
+
   checkStreakBreak() {
     if (!this.state.lastActiveDate || this.state.streak === 0) return;
     
@@ -351,6 +391,7 @@ class FizzyStoreClass {
     
     const lastDateStr = this.state.lastActiveDate;
     if (lastDateStr !== todayStr && lastDateStr !== yesterdayStr) {
+      this.advanceDailyStabilityHistory(todayStr);
       if (this.state.inventory && this.state.inventory.streakShields > 0) {
         // Auto consume shield!
         this.state.inventory.streakShields--;
@@ -394,6 +435,8 @@ class FizzyStoreClass {
       return { streakIncreased: false, newStreak: this.state.streak, reward: 0 };
     }
     
+    this.advanceDailyStabilityHistory(todayStr);
+
     // Check if consecutive
     const yesterday = new Date(now);
     yesterday.setDate(now.getDate() - 1);

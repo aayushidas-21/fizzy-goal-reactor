@@ -1412,3 +1412,64 @@
   background: linear-gradient(90deg, #ff2a6d 0%, #9b0000 100%) !important;
   box-shadow: 0 0 20px rgba(255, 42, 109, 0.4) !important;
 }
+
+/* LAB STATION ANALYTICS CHART */
+.analytics-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  margin-top: 16px;
+}
+
+.analytics-section h5 {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: white;
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+.chart-wrapper {
+  background: rgba(0, 0, 0, 0.25);
+  border: 2px dashed rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 16px 12px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.chart-wrapper svg {
+  overflow: visible;
+}
+
+.chart-labels {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.45);
+  font-weight: 600;
+}
+
+.active-chart-stability {
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.chart-dot {
+  cursor: pointer;
+  transition: r 0.2s ease, fill 0.2s ease, filter 0.2s ease;
+}
+
+.chart-dot:hover {
+  r: 7 !important;
+  fill: #fff !important;
+  filter: drop-shadow(0 0 8px var(--color-secondary));
+}

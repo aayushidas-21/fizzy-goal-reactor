@@ -337,6 +337,65 @@ function initApp() {
     if (statStreakRecord) statStreakRecord.innerText = `${state.streakHighscore || 0}d`;
     if (statGoldSpent) statGoldSpent.innerText = state.stats?.goldSpent || 0;
 
+    // Render SVG Stability Analytics Line Chart
+    const chartPath = document.getElementById('chartPath');
+    const chartArea = document.getElementById('chartArea');
+    const chartDots = document.getElementById('chartDots');
+    const chartStabilityVal = document.getElementById('chartStabilityVal');
+
+    if (chartPath && chartArea && chartDots) {
+      const history = state.stabilityHistory || [100, 100, 100, 100, 100, 100, 100];
+      if (chartStabilityVal) {
+        chartStabilityVal.innerText = Math.round(state.stability);
+      }
+      
+      const width = 320;
+      const height = 120;
+      const paddingX = 20;
+      const paddingY = 20;
+      
+      const plotWidth = width - paddingX * 2;
+      const plotHeight = height - paddingY * 2;
+      
+      const points = history.map((val, i) => {
+        const x = paddingX + (i * (plotWidth / 6));
+        const y = (height - paddingY) - ((val / 100) * plotHeight);
+        return { x, y, val };
+      });
+      
+      const pathD = 'M ' + points.map(p => `${p.x},${p.y}`).join(' L ');
+      const areaD = `${pathD} L ${paddingX + plotWidth},${height - paddingY} L ${paddingX},${height - paddingY} Z`;
+      
+      chartPath.setAttribute('d', pathD);
+      chartArea.setAttribute('d', areaD);
+      
+      chartDots.innerHTML = '';
+      points.forEach((p, i) => {
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('cx', p.x);
+        circle.setAttribute('cy', p.y);
+        circle.setAttribute('r', '4.5');
+        circle.setAttribute('fill', 'var(--color-secondary)');
+        circle.setAttribute('stroke', '#12122b');
+        circle.setAttribute('stroke-width', '2');
+        circle.setAttribute('class', 'chart-dot');
+        
+        circle.addEventListener('mouseenter', () => {
+          if (chartStabilityVal) {
+            chartStabilityVal.innerText = Math.round(p.val);
+          }
+        });
+        
+        circle.addEventListener('mouseleave', () => {
+          if (chartStabilityVal) {
+            chartStabilityVal.innerText = Math.round(state.stability);
+          }
+        });
+        
+        chartDots.appendChild(circle);
+      });
+    }
+
     // Apply active beaker waves theme dynamically
     const chamber = document.getElementById('reactorChamber');
     if (chamber) {
