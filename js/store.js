@@ -8,12 +8,16 @@ const initialStore = {
   level: 1,
   tokens: 50,
   stability: 100,
+  streak: 0,
+  streakHighscore: 0,
+  lastActiveDate: '',
   lastUpdate: Date.now()
 };
 
 class FizzyStoreClass {
   constructor() {
     this.state = this.loadState();
+    this.checkStreakBreak();
     this.listeners = [];
   }
 
@@ -117,6 +121,7 @@ class FizzyStoreClass {
       // Subtask completion reward
       xpGained += 15 * goal.weight;
       tokensGained += 2 * goal.weight;
+      this.recordDailyProgress(); // Reward daily streak
     }
 
     if (total > 0 && completed === total) {
@@ -125,6 +130,7 @@ class FizzyStoreClass {
       const baseReward = goal.weight === 1 ? 100 : goal.weight === 2 ? 250 : 500;
       xpGained += baseReward;
       tokensGained += Math.round(baseReward / 10);
+      this.recordDailyProgress(); // Reward daily streak
     } else {
       goal.completed = false;
     }
@@ -200,6 +206,7 @@ class FizzyStoreClass {
     if (cooled) {
       this.addXp(30); // XP reward for focus session
       this.addTokens(5);
+      this.recordDailyProgress(); // Reward daily streak
       this.saveState();
     }
     return cooled;
@@ -277,6 +284,77 @@ class FizzyStoreClass {
     // Save only if changes made or to keep timestamps active
     this.saveState();
     return anyPoppedThisTick;
+  }
+
+  checkStreakBreak() {
+    if (!this.state.lastActiveDate || this.state.streak === 0) return;
+    
+    const now = new Date();
+    const todayStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+    
+    const yesterday = new Date(now);
+    yesterday.setDate(now.getDate() - 1);
+    const yesterdayStr = yesterday.getFullYear() + '-' + String(yesterday.getMonth() + 1).padStart(2, '0') + '-' + String(yesterday.getDate()).padStart(2, '0');
+    
+    const lastDateStr = this.state.lastActiveDate;
+    if (lastDateStr !== todayStr && lastDateStr !== yesterdayStr) {
+      // Streak broken! Reset to 0
+      this.state.streak = 0;
+      this.saveState();
+    }
+  }
+
+  recordDailyProgress() {
+    const now = new Date();
+    const todayStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+    
+    if (typeof this.state.streak === 'undefined') this.state.streak = 0;
+    if (typeof this.state.streakHighscore === 'undefined') this.state.streakHighscore = 0;
+    
+    const lastDateStr = this.state.lastActiveDate;
+    
+    if (!lastDateStr) {
+      // First progress ever!
+      this.state.streak = 1;
+      this.state.tokens += 20; // 20 gold reward (stored as tokens)
+      this.state.lastActiveDate = todayStr;
+      this.state.streakHighscore = Math.max(this.state.streakHighscore, this.state.streak);
+      this.saveState();
+      return { streakIncreased: true, newStreak: 1, reward: 20 };
+    }
+    
+    if (lastDateStr === todayStr) {
+      // Already recorded today, maintain streak but don't increment
+      return { streakIncreased: false, newStreak: this.state.streak, reward: 0 };
+    }
+    
+    // Check if consecutive
+    const yesterday = new Date(now);
+    yesterday.setDate(now.getDate() - 1);
+    const yesterdayStr = yesterday.getFullYear() + '-' + String(yesterday.getMonth() + 1).padStart(2, '0') + '-' + String(yesterday.getDate()).padStart(2, '0');
+    
+    let rewardGold = 0;
+    let streakIncreased = false;
+    
+    if (lastDateStr === yesterdayStr) {
+      // Consecutive day!
+      this.state.streak += 1;
+      rewardGold = 10 + (this.state.streak * 5); // scales up! E.g. Day 2 = 20g, Day 3 = 25g...
+      rewardGold = Math.min(50, rewardGold); // cap at 50g per day
+      this.state.tokens += rewardGold;
+      streakIncreased = true;
+    } else {
+      // Broken streak! Restart at 1
+      this.state.streak = 1;
+      rewardGold = 20;
+      this.state.tokens += rewardGold;
+      streakIncreased = true;
+    }
+    
+    this.state.lastActiveDate = todayStr;
+    this.state.streakHighscore = Math.max(this.state.streakHighscore, this.state.streak);
+    this.saveState();
+    return { streakIncreased, newStreak: this.state.streak, reward: rewardGold };
   }
 }
 

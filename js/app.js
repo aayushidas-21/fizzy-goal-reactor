@@ -16,6 +16,7 @@ function initApp() {
   const playerXpFill = document.getElementById('playerXpFill');
   const playerXpText = document.getElementById('playerXpText');
   const playerTokens = document.getElementById('playerTokens');
+  const playerStreak = document.getElementById('playerStreak');
   const reactorStabilityText = document.getElementById('reactorStabilityText');
   const reactorStabilityFill = document.getElementById('reactorStabilityFill');
   const activeBubbleCount = document.getElementById('activeBubbleCount');
@@ -87,8 +88,11 @@ function initApp() {
     playerXpFill.style.width = `${xpPercent}%`;
     playerXpText.innerText = `${state.xp}/${xpNeeded} XP`;
 
-    // 2. Soda Tokens
+    // 2. Soda Tokens & Streak
     playerTokens.innerText = state.tokens;
+    if (playerStreak) {
+      playerStreak.innerText = `${state.streak || 0} ${state.streak === 1 ? 'Day' : 'Days'}`;
+    }
 
     // 3. Stability Index
     const stability = state.stability;
