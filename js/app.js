@@ -56,6 +56,12 @@ function initApp() {
   const bubbleFeedList = document.getElementById('bubbleFeedList');
   const feedEmptyState = document.getElementById('feedEmptyState');
   
+  // Upgrade Shop Selectors
+  const shieldCount = document.getElementById('shieldCount');
+  const regulatorCount = document.getElementById('regulatorCount');
+  const carbonatorCount = document.getElementById('carbonatorCount');
+  const activeModifiersSection = document.getElementById('activeModifiersSection');
+  
   // Modals
   const createModal = document.getElementById('createModal');
   const openCreateModalBtn = document.getElementById('openCreateModalBtn');
@@ -241,6 +247,65 @@ function initApp() {
         renderDetailModal(activeGoal);
       } else {
         closeDetailModal();
+      }
+    }
+
+    // 7. Update Upgrade Shop inventory and button states
+    if (shieldCount) shieldCount.innerText = `${state.inventory?.streakShields || 0} owned`;
+    if (regulatorCount) regulatorCount.innerText = `${state.inventory?.pressureRegulators || 0} owned`;
+    if (carbonatorCount) carbonatorCount.innerText = `${state.inventory?.goldCarbonators || 0} owned`;
+
+    // Disable purchase buttons if gold is insufficient
+    document.querySelectorAll('.buy-btn').forEach(btn => {
+      const itemType = btn.getAttribute('data-item');
+      let cost = 9999;
+      if (itemType === 'streakShield') cost = 150;
+      else if (itemType === 'pressureRegulator') cost = 100;
+      else if (itemType === 'goldCarbonator') cost = 200;
+      btn.disabled = state.tokens < cost;
+    });
+
+    // Enable activation buttons if owned > 0
+    document.querySelectorAll('.use-btn').forEach(btn => {
+      const itemType = btn.getAttribute('data-item');
+      let owned = 0;
+      if (itemType === 'pressureRegulator') owned = state.inventory?.pressureRegulators || 0;
+      else if (itemType === 'goldCarbonator') owned = state.inventory?.goldCarbonators || 0;
+      btn.disabled = owned <= 0;
+    });
+
+    // Render active modifiers countdowns
+    if (activeModifiersSection) {
+      activeModifiersSection.innerHTML = '';
+      const now = Date.now();
+      const mods = state.activeModifiers || {};
+      
+      // Regulator
+      if (mods.pressureRegulatorUntil > now) {
+        const diff = mods.pressureRegulatorUntil - now;
+        const hours = Math.floor(diff / (1000 * 3600));
+        const mins = Math.floor((diff % (1000 * 3600)) / (1000 * 60));
+        const secs = Math.floor((diff % (1000 * 60)) / 1000);
+        const formatted = `${hours}h ${mins}m ${secs}s left`;
+        
+        const tag = document.createElement('div');
+        tag.className = 'mod-tag';
+        tag.innerHTML = `<span>⚙️ Regulator Active:</span> <span>${formatted}</span>`;
+        activeModifiersSection.appendChild(tag);
+      }
+      
+      // Carbonator
+      if (mods.goldCarbonatorUntil > now) {
+        const diff = mods.goldCarbonatorUntil - now;
+        const hours = Math.floor(diff / (1000 * 3600));
+        const mins = Math.floor((diff % (1000 * 3600)) / (1000 * 60));
+        const secs = Math.floor((diff % (1000 * 60)) / 1000);
+        const formatted = `${hours}h ${mins}m ${secs}s left`;
+        
+        const tag = document.createElement('div');
+        tag.className = 'mod-tag tag-orange';
+        tag.innerHTML = `<span>🧪 Carbonator Active (2x):</span> <span>${formatted}</span>`;
+        activeModifiersSection.appendChild(tag);
       }
     }
   }
@@ -652,6 +717,25 @@ function initApp() {
         FizzyAudio.playFail();
       }
     }
+  });
+
+  // --- UPGRADE SHOP BUTTON BINDINGS ---
+  document.querySelectorAll('.buy-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const itemType = btn.getAttribute('data-item');
+      FizzyStore.buyItem(itemType);
+      FizzyAudio.playGlug();
+    });
+  });
+
+  document.querySelectorAll('.use-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const itemType = btn.getAttribute('data-item');
+      FizzyStore.activateItem(itemType);
+      FizzyAudio.playFizz();
+    });
   });
 
   // Supporting single goal completion when subtasks are empty

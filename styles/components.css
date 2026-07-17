@@ -932,3 +932,169 @@
     opacity: 0;
   }
 }
+
+/* Soda Flavor Lab Upgrades Shop styling */
+.shop-card {
+  margin-top: 20px;
+}
+
+.shop-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.shop-item {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1.5px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 12px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  transition: all 0.2s ease;
+}
+
+.shop-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-1px);
+}
+
+.item-icon-container {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+}
+
+.bg-shield {
+  background: radial-gradient(circle at 35% 35%, #54a0ff 0%, #00d2d3 100%);
+}
+
+.bg-regulator {
+  background: radial-gradient(circle at 35% 35%, #ffd280 0%, #ff9f43 100%);
+}
+
+.bg-carbonator {
+  background: radial-gradient(circle at 35% 35%, #a55eea 0%, #8854d0 100%);
+}
+
+.item-details {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.item-name-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.item-title {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: white;
+}
+
+.item-badge {
+  font-size: 0.7rem;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+  padding: 2px 6px;
+  border-radius: 8px;
+}
+
+.item-desc {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  line-height: 1.3;
+}
+
+.item-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.buy-btn, .use-btn {
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.buy-btn {
+  background: var(--color-secondary);
+  color: var(--color-bg);
+  box-shadow: 0 3px 6px rgba(0, 229, 255, 0.2);
+}
+
+.buy-btn:hover:not(:disabled) {
+  background: #33f0ff;
+  transform: translateY(-1px);
+}
+
+.buy-btn:disabled {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.2);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.use-btn {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+}
+
+.use-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.use-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* Active modifiers segment */
+.active-modifiers-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.mod-tag {
+  background: rgba(0, 229, 255, 0.06);
+  border: 1.5px solid rgba(0, 229, 255, 0.15);
+  color: var(--color-secondary);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.mod-tag.tag-orange {
+  background: rgba(255, 159, 67, 0.06);
+  border-color: rgba(255, 159, 67, 0.2);
+  color: #ff9f43;
+}

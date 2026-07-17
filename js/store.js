@@ -11,6 +11,15 @@ const initialStore = {
   streak: 0,
   streakHighscore: 0,
   lastActiveDate: '',
+  inventory: {
+    streakShields: 0,
+    pressureRegulators: 0,
+    goldCarbonators: 0
+  },
+  activeModifiers: {
+    pressureRegulatorUntil: 0,
+    goldCarbonatorUntil: 0
+  },
   lastUpdate: Date.now()
 };
 
@@ -36,7 +45,10 @@ class FizzyStoreClass {
         } else {
           if (parsed) parsed.goals = [];
         }
-        return { ...initialStore, ...parsed };
+        const merged = { ...initialStore, ...parsed };
+        merged.inventory = { ...initialStore.inventory, ...parsed.inventory };
+        merged.activeModifiers = { ...initialStore.activeModifiers, ...parsed.activeModifiers };
+        return merged;
       }
     } catch (e) {
       console.error("Could not load state from localStorage:", e);
@@ -170,9 +182,17 @@ class FizzyStoreClass {
 
   addTokens(amount) {
     if (amount <= 0) return;
-    this.state.tokens += amount;
+    
+    // Apply Gold Carbonator Modifier (2x multiplier)
+    const isCarbonatorActive = this.state.activeModifiers && this.state.activeModifiers.goldCarbonatorUntil > Date.now();
+    const finalAmount = isCarbonatorActive ? amount * 2 : amount;
+    
+    this.state.tokens += finalAmount;
     if (window.showFizzyToast) {
-      window.showFizzyToast("Fizzy Gold Added! 🪙", `+${amount} Gold credited to your vault.`, "gold");
+      const msg = isCarbonatorActive 
+        ? `+${finalAmount} Gold credited (2x Carbonator Active! 🧪🔥)` 
+        : `+${finalAmount} Gold credited to your vault.`;
+      window.showFizzyToast("Fizzy Gold Added! 🪙", msg, "gold");
     }
   }
 
@@ -277,7 +297,14 @@ class FizzyStoreClass {
       // Pressure calculations (increases with time elapsed, decreases with progress)
       const lag = Math.max(0, timeRatio - progressRatio);
       // Base pressure rises with time, progress lag exacerbates it
-      const rawPressure = (timeRatio * 40) + (lag * 60);
+      let rawPressure = (timeRatio * 40) + (lag * 60);
+
+      // Apply Pressure Regulator Modifier (20% slower buildup)
+      const isRegulatorActive = this.state.activeModifiers && this.state.activeModifiers.pressureRegulatorUntil > Date.now();
+      if (isRegulatorActive) {
+        rawPressure *= 0.8;
+      }
+
       goal.pressure = Math.min(100, Math.max(0, Math.round(rawPressure)));
 
       // Ambient heat damage: goals with PSI > 75 slowly leak damage to overall stability
@@ -308,9 +335,19 @@ class FizzyStoreClass {
     
     const lastDateStr = this.state.lastActiveDate;
     if (lastDateStr !== todayStr && lastDateStr !== yesterdayStr) {
-      // Streak broken! Reset to 0
-      this.state.streak = 0;
-      this.saveState();
+      if (this.state.inventory && this.state.inventory.streakShields > 0) {
+        // Auto consume shield!
+        this.state.inventory.streakShields--;
+        this.state.lastActiveDate = yesterdayStr; // Reset active date to maintain streak
+        this.saveState();
+        if (window.showFizzyToast) {
+          window.showFizzyToast("Streak Shield Active! 🛡️", "A daily streak shield was consumed to protect your streak!", "streak");
+        }
+      } else {
+        // Streak broken! Reset to 0
+        this.state.streak = 0;
+        this.saveState();
+      }
     }
   }
 
@@ -374,6 +411,89 @@ class FizzyStoreClass {
     this.state.streakHighscore = Math.max(this.state.streakHighscore, this.state.streak);
     this.saveState();
     return { streakIncreased, newStreak: this.state.streak, reward: rewardGold };
+  }
+
+  buyItem(itemType) {
+    let cost = 0;
+    let stateKey = "";
+    let itemName = "";
+    
+    if (itemType === 'streakShield') {
+      cost = 150;
+      stateKey = "streakShields";
+      itemName = "Streak Shield 🛡️";
+    } else if (itemType === 'pressureRegulator') {
+      cost = 100;
+      stateKey = "pressureRegulators";
+      itemName = "Pressure Regulator ⚙️";
+    } else if (itemType === 'goldCarbonator') {
+      cost = 200;
+      stateKey = "goldCarbonators";
+      itemName = "Gold Carbonator 🧪";
+    } else {
+      return false;
+    }
+    
+    if (this.state.tokens >= cost) {
+      this.state.tokens -= cost;
+      if (!this.state.inventory) {
+        this.state.inventory = { streakShields: 0, pressureRegulators: 0, goldCarbonators: 0 };
+      }
+      this.state.inventory[stateKey] = (this.state.inventory[stateKey] || 0) + 1;
+      this.saveState();
+      
+      if (window.showFizzyToast) {
+        window.showFizzyToast("Item Purchased! 🛒", `Bought ${itemName} for ${cost} Gold.`, "gold");
+      }
+      return true;
+    }
+    
+    if (window.showFizzyToast) {
+      window.showFizzyToast("Insufficient Gold! 🪙", `Need ${cost} Gold to purchase ${itemName}.`, "info");
+    }
+    return false;
+  }
+
+  activateItem(itemType) {
+    if (!this.state.inventory) return false;
+    
+    let stateKey = "";
+    let itemName = "";
+    let duration = 0;
+    let activeKey = "";
+    
+    if (itemType === 'pressureRegulator') {
+      stateKey = "pressureRegulators";
+      itemName = "Pressure Regulator ⚙️";
+      duration = 24 * 60 * 60 * 1000; // 24 hours
+      activeKey = "pressureRegulatorUntil";
+    } else if (itemType === 'goldCarbonator') {
+      stateKey = "goldCarbonators";
+      itemName = "Gold Carbonator 🧪";
+      duration = 12 * 60 * 60 * 1000; // 12 hours
+      activeKey = "goldCarbonatorUntil";
+    } else {
+      return false;
+    }
+    
+    if (this.state.inventory[stateKey] > 0) {
+      this.state.inventory[stateKey]--;
+      if (!this.state.activeModifiers) {
+        this.state.activeModifiers = { pressureRegulatorUntil: 0, goldCarbonatorUntil: 0 };
+      }
+      const currentUntil = this.state.activeModifiers[activeKey] || 0;
+      const baseTime = currentUntil > Date.now() ? currentUntil : Date.now();
+      this.state.activeModifiers[activeKey] = baseTime + duration;
+      
+      this.saveState();
+      
+      if (window.showFizzyToast) {
+        const hours = duration / (60 * 60 * 1000);
+        window.showFizzyToast("Modifier Activated! ⚡", `${itemName} is now active for ${hours} hours!`, "info");
+      }
+      return true;
+    }
+    return false;
   }
 }
 
