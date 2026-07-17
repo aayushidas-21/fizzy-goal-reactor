@@ -49,6 +49,7 @@ function initApp() {
   const splashOverlay = document.getElementById('splashOverlay');
   const foamStainsContainer = document.getElementById('foamStainsContainer');
   const splashCaption = document.getElementById('splashCaption');
+  const wipingCloth = document.getElementById('wipingCloth');
   let disasterTimeout = null;
 
   // Internal state for modal operations
@@ -205,6 +206,29 @@ function initApp() {
 
   // --- TIME TICK LOOP (1 Second) ---
   setInterval(() => {
+    // 1. Identify goals that are about to complete their explosion countdown and pop this tick
+    const now = Date.now();
+    const explodingThisTick = FizzyStore.state.goals.filter(g => {
+      if (g.completed || g.popped) return false;
+      const timeLeft = g.deadline - now;
+      if (timeLeft <= 0 && g.isExploding && (now - g.explosionStartTime >= 2500)) {
+        return true;
+      }
+      return false;
+    });
+
+    // 2. Query and capture their exact coordinate position in the physics engine BEFORE calculatePressures modifies/deletes them
+    const popCoordinates = new Map();
+    explodingThisTick.forEach(g => {
+      if (reactor) {
+        const b = reactor.bubbles.find(x => x.id === g.id);
+        if (b) {
+          popCoordinates.set(g.id, { x: b.x, y: b.y });
+        }
+      }
+    });
+
+    // 3. Update store states and check pressures
     const poppedList = FizzyStore.calculatePressures();
     
     // Play warning sound if there are panic bubbles
@@ -213,18 +237,13 @@ function initApp() {
       FizzyAudio.playSiren();
     }
 
-    // Trigger popup overlay if any bubble exploded this tick
+    // 4. Trigger pop visuals at the captured coordinates where they were vibrating!
     if (poppedList && poppedList.length > 0) {
-      // Spawn massive explosion visual at the top center of the beaker
       poppedList.forEach(g => {
         if (reactor) {
-          const radius = g.weight === 1 ? 36 : g.weight === 2 ? 50 : 64;
-          const centerY = reactor.height / 2;
-          const coreRadius = (reactor.width / 2) - 16;
-          const maxDist = coreRadius - radius;
-          
-          const rx = reactor.width / 2;
-          const ry = centerY - maxDist + 8;
+          const coords = popCoordinates.get(g.id);
+          const rx = coords ? coords.x : reactor.width / 2;
+          const ry = coords ? coords.y : reactor.height / 2;
           
           // Spawn multiple layers of particles and steam
           reactor.createPopVisual(rx, ry, g.flavor);
@@ -237,6 +256,17 @@ function initApp() {
       triggerSodaDisaster(poppedList);
     }
   }, 1000);
+
+  // Wiping cloth movement tracker
+  splashOverlay.addEventListener('mousemove', (e) => {
+    wipingCloth.classList.remove('hidden');
+    wipingCloth.style.left = `${e.clientX}px`;
+    wipingCloth.style.top = `${e.clientY}px`;
+  });
+  
+  splashOverlay.addEventListener('mouseleave', () => {
+    wipingCloth.classList.add('hidden');
+  });
 
   // --- DISASTER POP MANAGEMENT ---
   function triggerSodaDisaster(poppedList) {
@@ -256,7 +286,10 @@ function initApp() {
     foamStainsContainer.innerHTML = '';
     splashCaption.classList.add('hidden');
     
-    // Wait 5 seconds showing only the glitch title, then show caption and spawn stains
+    // Hide wiping cloth initially until mouse moves
+    wipingCloth.classList.add('hidden');
+    
+    // Wait 3 seconds showing only the glitch title, then show caption and spawn stains
     disasterTimeout = setTimeout(() => {
       splashCaption.classList.remove('hidden');
       
@@ -278,24 +311,37 @@ function initApp() {
         stain.style.animation = `foamFloat ${8 + Math.random() * 8}s infinite ease-in-out`;
         stain.style.animationDelay = `${Math.random() * -10}s`;
   
-        stain.addEventListener('click', () => {
-          FizzyAudio.playPop();
+        // Sweep/wipe mechanics: trigger cleanup on hover (mouseenter)
+        stain.addEventListener('mouseenter', () => {
+          if (stain.classList.contains('wiping')) return;
+          stain.classList.add('wiping');
+          
+          FizzyAudio.playPop(); // play wiping sound
           
           // Spawn miniature pop bubbles
           const rect = stain.getBoundingClientRect();
-          reactor.createPopVisual(rect.left + size/2, rect.top + size/2, poppedList[0].flavor);
-          
-          stain.remove();
-          FizzyStore.cleanFoamStain(); // Restores stability by 5%
-  
-          // If all stains are clicked away, close disaster overlay
-          if (foamStainsContainer.children.length === 0) {
-            splashOverlay.classList.add('hidden');
-            // Clear popped status of goal or just keep it popped but clean screen
-            // We let goals dissolve once popped so the reactor is cleaned
-            poppedList.forEach(g => FizzyStore.deleteGoal(g.id));
-            FizzyAudio.playSuccess();
+          if (reactor) {
+            reactor.createPopVisual(rect.left + size/2, rect.top + size/2, poppedList[0].flavor);
           }
+          
+          // Shrink and fade away
+          stain.style.transform = 'scale(0) rotate(180deg)';
+          stain.style.opacity = '0';
+          stain.style.transition = 'transform 0.4s ease-out, opacity 0.4s ease-out';
+          
+          setTimeout(() => {
+            stain.remove();
+            FizzyStore.cleanFoamStain(); // Restores stability by 5%
+            
+            // If all stains are wiped away, close disaster overlay
+            const activeStains = Array.from(foamStainsContainer.children).filter(el => !el.classList.contains('wiping'));
+            if (activeStains.length === 0) {
+              splashOverlay.classList.add('hidden');
+              wipingCloth.classList.add('hidden');
+              poppedList.forEach(g => FizzyStore.deleteGoal(g.id));
+              FizzyAudio.playSuccess();
+            }
+          }, 400);
         });
         
         foamStainsContainer.appendChild(stain);
