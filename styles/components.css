@@ -673,23 +673,31 @@
 /* 3D claymorphic cleaning sponge cursor */
 .wiping-cloth {
   position: fixed; /* stays relative to screen coordinates */
-  width: 80px;
-  height: 80px;
-  background: radial-gradient(circle at 30% 30%, #ffd60a 0%, #ffc300 70%, #cc9900 100%);
-  border: 4px solid rgba(255, 255, 255, 0.55);
-  border-radius: 20px; /* sponge shape */
+  width: 95px;
+  height: 60px; /* rectangular sponge ratio */
+  background-color: #ffb703; /* bright yellow cellulose body */
+  
+  /* Porous cellulose texture overlay */
+  background-image: 
+    radial-gradient(circle, rgba(0, 0, 0, 0.12) 14%, transparent 18%),
+    radial-gradient(circle, rgba(0, 0, 0, 0.08) 8%, transparent 12%);
+  background-size: 14px 14px, 20px 20px;
+  background-position: 0 0, 7px 7px;
+  
+  /* Double-layer sponge design: Green abrasive scrub pad on top */
+  border-top: 10px solid #2ec4b6; 
+  border-radius: 8px; /* sharp clean edge cut */
+  
+  /* Deep 3D shadows and squeeze highlights */
   box-shadow: 
-    inset 4px 4px 8px rgba(255, 255, 255, 0.6),
-    inset -4px -4px 8px rgba(0, 0, 0, 0.4),
-    0 8px 20px rgba(0, 0, 0, 0.45);
+    inset 0 4px 6px rgba(255, 255, 255, 0.45), /* top light glint */
+    inset 0 -6px 12px rgba(0, 0, 0, 0.35), /* bottom shadow */
+    0 15px 35px rgba(0, 0, 0, 0.5); /* cursor distance shadow */
+    
   pointer-events: none; /* passes hovering events through to stains */
   z-index: 10001;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2rem;
   transform: translate(-50%, -50%);
-  transition: transform 0.05s ease-out;
+  transition: transform 0.04s ease-out;
 }
 
 .foam-stains-container {
