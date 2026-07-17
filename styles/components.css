@@ -1094,7 +1094,287 @@
 }
 
 .mod-tag.tag-orange {
-  background: rgba(255, 159, 67, 0.06);
+  background-color: rgba(255, 159, 67, 0.06);
   border-color: rgba(255, 159, 67, 0.2);
   color: #ff9f43;
+}
+
+/* Bottom Control Deck Side-by-Side Console Layout */
+.bottom-control-deck {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 24px;
+  width: 100%;
+}
+
+@media (max-width: 1080px) {
+  .bottom-control-deck {
+    grid-template-columns: 1fr;
+  }
+}
+
+.profile-hub-card, .bottom-control-deck .shop-card {
+  width: 100%;
+  margin-top: 0; /* Override any margins */
+}
+
+.profile-hub-card {
+  background: radial-gradient(circle at 10% 20%, rgba(35, 48, 102, 0.5) 0%, rgba(10, 13, 33, 0.95) 90%);
+}
+
+.profile-input-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.profile-input-group input {
+  flex-grow: 1;
+  background: rgba(0, 0, 0, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 10px 14px;
+  color: white;
+  font-family: inherit;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+  box-shadow: inset 2px 2px 5px rgba(0,0,0,0.5);
+}
+
+.profile-input-group input:focus {
+  outline: none;
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.2), inset 2px 2px 5px rgba(0,0,0,0.5);
+}
+
+.profile-input-group .action-btn {
+  background: var(--color-secondary);
+  color: var(--color-bg);
+  font-family: inherit;
+  font-weight: 700;
+  padding: 0 18px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 229, 255, 0.25);
+  transition: all 0.2s ease;
+}
+
+.profile-input-group .action-btn:hover {
+  background: #33f0ff;
+  transform: translateY(-1px);
+}
+
+.display-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.researcher-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.edit-btn-text {
+  background: none;
+  border: none;
+  color: var(--color-secondary);
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.2s;
+  padding: 0;
+}
+
+.edit-btn-text:hover {
+  color: #33f0ff;
+  text-decoration: underline;
+}
+
+.lifetime-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.stat-box {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1.5px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  padding: 10px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.stat-box:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.stat-num {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: white;
+  text-shadow: 0 2px 5px rgba(0,0,0,0.4);
+}
+
+.stat-lbl {
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.customizer-divider {
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06) 20%, rgba(255,255,255,0.06) 80%, transparent);
+  margin: 18px 0;
+}
+
+.liquid-shop-section h5 {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 4px;
+}
+
+.section-desc {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+
+.fluid-themes-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.fluid-theme-item {
+  background: rgba(255, 255, 255, 0.03);
+  border: 2px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.fluid-theme-item:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.fluid-theme-item.active {
+  border-color: var(--color-secondary);
+  background: rgba(0, 229, 255, 0.04);
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.15);
+}
+
+.fluid-theme-item.locked {
+  opacity: 0.65;
+}
+
+.fluid-theme-item.locked:hover {
+  opacity: 0.95;
+}
+
+.theme-preview {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 2.5px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 
+    inset 2px 2px 5px rgba(255, 255, 255, 0.4),
+    0 4px 8px rgba(0,0,0,0.3);
+  overflow: hidden;
+  position: relative;
+}
+
+/* Gradients for beaker wave selections */
+.wave-peach {
+  background: linear-gradient(180deg, #ff7e5f 0%, #feb47b 100%);
+}
+
+.wave-lime {
+  background: linear-gradient(180deg, #00ff88 0%, #00e1ff 100%);
+}
+
+.wave-purple {
+  background: linear-gradient(180deg, #9b51e0 0%, #8c7ae6 100%);
+}
+
+.wave-cherry {
+  background: linear-gradient(180deg, #ff2a6d 0%, #9b0000 100%);
+}
+
+/* Unlocking key icons */
+.fluid-theme-item.locked .theme-preview::after {
+  content: '🔒';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.9rem;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+}
+
+.theme-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  text-align: center;
+}
+
+.theme-title {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: white;
+  white-space: nowrap;
+}
+
+.theme-cost {
+  font-size: 0.62rem;
+  font-weight: 600;
+  color: var(--color-secondary);
+}
+
+.fluid-theme-item.active .theme-cost {
+  color: var(--color-secondary);
+}
+
+/* CSS Theme mappings for active reactor fluid */
+.theme-peach .sphere-wave {
+  background: linear-gradient(90deg, #ff7e5f 0%, #feb47b 100%) !important;
+}
+
+.theme-lime .sphere-wave {
+  background: linear-gradient(90deg, #00ff88 0%, #00e1ff 100%) !important;
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.4) !important;
+}
+
+.theme-purple .sphere-wave {
+  background: linear-gradient(90deg, #9b51e0 0%, #8c7ae6 100%) !important;
+  box-shadow: 0 0 20px rgba(155, 81, 224, 0.4) !important;
+}
+
+.theme-cherry .sphere-wave {
+  background: linear-gradient(90deg, #ff2a6d 0%, #9b0000 100%) !important;
+  box-shadow: 0 0 20px rgba(255, 42, 109, 0.4) !important;
 }

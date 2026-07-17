@@ -61,6 +61,18 @@ function initApp() {
   const regulatorCount = document.getElementById('regulatorCount');
   const carbonatorCount = document.getElementById('carbonatorCount');
   const activeModifiersSection = document.getElementById('activeModifiersSection');
+
+  // Profile Station Selectors
+  const profileSetupSec = document.getElementById('profileSetupSec');
+  const profileDisplaySec = document.getElementById('profileDisplaySec');
+  const researcherNameInput = document.getElementById('researcherNameInput');
+  const researcherNameText = document.getElementById('researcherNameText');
+  const saveProfileBtn = document.getElementById('saveProfileBtn');
+  const editProfileBtn = document.getElementById('editProfileBtn');
+  const statGoalsPopped = document.getElementById('statGoalsPopped');
+  const statCoolants = document.getElementById('statCoolants');
+  const statStreakRecord = document.getElementById('statStreakRecord');
+  const statGoldSpent = document.getElementById('statGoldSpent');
   
   // Modals
   const createModal = document.getElementById('createModal');
@@ -308,6 +320,49 @@ function initApp() {
         activeModifiersSection.appendChild(tag);
       }
     }
+
+    // 8. Render profile achievements and theme customizations
+    const nameSet = !!state.researcherName;
+    if (nameSet) {
+      if (profileSetupSec) profileSetupSec.classList.add('hidden');
+      if (profileDisplaySec) profileDisplaySec.classList.remove('hidden');
+      if (researcherNameText) researcherNameText.innerText = state.researcherName;
+    } else {
+      if (profileSetupSec) profileSetupSec.classList.remove('hidden');
+      if (profileDisplaySec) profileDisplaySec.classList.add('hidden');
+      if (researcherNameInput) researcherNameInput.value = '';
+    }
+
+    if (statGoalsPopped) statGoalsPopped.innerText = state.stats?.goalsPopped || 0;
+    if (statCoolants) statCoolants.innerText = state.stats?.coolantsFlooded || 0;
+    if (statStreakRecord) statStreakRecord.innerText = `${state.streakHighscore || 0}d`;
+    if (statGoldSpent) statGoldSpent.innerText = state.stats?.goldSpent || 0;
+
+    // Apply active beaker waves theme dynamically
+    const chamber = document.getElementById('reactorChamber');
+    if (chamber) {
+      chamber.className = `reactor-sphere-body theme-${state.activeTheme || 'peach'}`;
+    }
+
+    // Refresh fluid customizer items preview grid status
+    document.querySelectorAll('.fluid-theme-item').forEach(item => {
+      const themeName = item.getAttribute('data-theme');
+      const cost = item.getAttribute('data-cost');
+      const costBadge = item.querySelector('.theme-cost');
+      const isUnlocked = state.unlockedThemes && state.unlockedThemes.includes(themeName);
+      const isActive = state.activeTheme === themeName;
+      
+      item.className = 'fluid-theme-item';
+      if (isActive) {
+        item.classList.add('active');
+        if (costBadge) costBadge.innerText = 'Active';
+      } else if (isUnlocked) {
+        if (costBadge) costBadge.innerText = 'Unlocked';
+      } else {
+        item.classList.add('locked');
+        if (costBadge) costBadge.innerText = `${cost}g`;
+      }
+    });
   }
 
   // Bind store listener
@@ -758,6 +813,48 @@ function initApp() {
       closeDetailModal();
     }
   };
+
+  // --- PROFILE HUB LISTENERS ---
+  if (saveProfileBtn) {
+    saveProfileBtn.addEventListener('click', () => {
+      const name = researcherNameInput.value.trim();
+      if (name) {
+        FizzyStore.state.researcherName = name;
+        FizzyStore.saveState();
+        FizzyAudio.playSuccess();
+      }
+    });
+  }
+
+  if (editProfileBtn) {
+    editProfileBtn.addEventListener('click', () => {
+      FizzyStore.state.researcherName = '';
+      FizzyStore.saveState();
+      FizzyAudio.playPop();
+    });
+  }
+
+  // --- BEAKER THEME LISTENERS ---
+  document.querySelectorAll('.fluid-theme-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const theme = item.getAttribute('data-theme');
+      const cost = parseInt(item.getAttribute('data-cost') || '0', 10);
+      const isUnlocked = item.classList.contains('active') || (FizzyStore.state.unlockedThemes && FizzyStore.state.unlockedThemes.includes(theme));
+      
+      if (isUnlocked) {
+        FizzyStore.setActiveTheme(theme);
+        FizzyAudio.playFizz();
+      } else {
+        const confirmed = confirm(`Do you want to spend ${cost} Gold to unlock the ${theme} beaker liquid style?`);
+        if (confirmed) {
+          if (FizzyStore.unlockTheme(theme, cost)) {
+            FizzyStore.setActiveTheme(theme);
+            FizzyAudio.playSuccess();
+          }
+        }
+      }
+    });
+  });
 
   // --- DEVELOPER / JUDGE DEMO MODE CHEAT CONSOLE ---
   // Double-clicking the logo icon spawns a small debug tray to help speed up time

@@ -20,6 +20,14 @@ const initialStore = {
     pressureRegulatorUntil: 0,
     goldCarbonatorUntil: 0
   },
+  researcherName: '',
+  unlockedThemes: ['peach'],
+  activeTheme: 'peach',
+  stats: {
+    goalsPopped: 0,
+    coolantsFlooded: 0,
+    goldSpent: 0
+  },
   lastUpdate: Date.now()
 };
 
@@ -48,6 +56,8 @@ class FizzyStoreClass {
         const merged = { ...initialStore, ...parsed };
         merged.inventory = { ...initialStore.inventory, ...parsed.inventory };
         merged.activeModifiers = { ...initialStore.activeModifiers, ...parsed.activeModifiers };
+        merged.stats = { ...initialStore.stats, ...parsed.stats };
+        merged.unlockedThemes = Array.isArray(parsed.unlockedThemes) ? parsed.unlockedThemes : [...initialStore.unlockedThemes];
         return merged;
       }
     } catch (e) {
@@ -138,6 +148,8 @@ class FizzyStoreClass {
 
     if (total > 0 && completed === total) {
       goal.completed = true;
+      if (!this.state.stats) this.state.stats = { goalsPopped: 0, coolantsFlooded: 0, goldSpent: 0 };
+      this.state.stats.goalsPopped = (this.state.stats.goalsPopped || 0) + 1;
       // Goal completion bonus
       const baseReward = goal.weight === 1 ? 100 : goal.weight === 2 ? 250 : 500;
       xpGained += baseReward;
@@ -199,6 +211,8 @@ class FizzyStoreClass {
   useTokens(amount) {
     if (this.state.tokens >= amount) {
       this.state.tokens -= amount;
+      if (!this.state.stats) this.state.stats = { goalsPopped: 0, coolantsFlooded: 0, goldSpent: 0 };
+      this.state.stats.goldSpent = (this.state.stats.goldSpent || 0) + amount;
       this.saveState();
       return true;
     }
@@ -234,6 +248,8 @@ class FizzyStoreClass {
     });
 
     if (cooled) {
+      if (!this.state.stats) this.state.stats = { goalsPopped: 0, coolantsFlooded: 0, goldSpent: 0 };
+      this.state.stats.coolantsFlooded = (this.state.stats.coolantsFlooded || 0) + 1;
       this.addXp(30); // XP reward for focus session
       this.addTokens(5);
       this.recordDailyProgress(); // Reward daily streak
@@ -434,8 +450,7 @@ class FizzyStoreClass {
       return false;
     }
     
-    if (this.state.tokens >= cost) {
-      this.state.tokens -= cost;
+    if (this.useTokens(cost)) {
       if (!this.state.inventory) {
         this.state.inventory = { streakShields: 0, pressureRegulators: 0, goldCarbonators: 0 };
       }
@@ -490,6 +505,46 @@ class FizzyStoreClass {
       if (window.showFizzyToast) {
         const hours = duration / (60 * 60 * 1000);
         window.showFizzyToast("Modifier Activated! ⚡", `${itemName} is now active for ${hours} hours!`, "info");
+      }
+      return true;
+    }
+    return false;
+  }
+
+  unlockTheme(themeName, cost) {
+    if (!this.state.unlockedThemes) {
+      this.state.unlockedThemes = ['peach'];
+    }
+    
+    if (this.state.unlockedThemes.includes(themeName)) {
+      return true; // Already unlocked
+    }
+    
+    if (this.useTokens(cost)) {
+      this.state.unlockedThemes.push(themeName);
+      this.saveState();
+      if (window.showFizzyToast) {
+        window.showFizzyToast("Beaker Liquid Unlocked! 🧪", `Successfully purchased liquid theme for ${cost} Gold.`, "gold");
+      }
+      return true;
+    }
+    
+    if (window.showFizzyToast) {
+      window.showFizzyToast("Insufficient Gold! 🪙", `Need ${cost} Gold to unlock this beaker theme.`, "info");
+    }
+    return false;
+  }
+
+  setActiveTheme(themeName) {
+    if (!this.state.unlockedThemes) {
+      this.state.unlockedThemes = ['peach'];
+    }
+    
+    if (this.state.unlockedThemes.includes(themeName)) {
+      this.state.activeTheme = themeName;
+      this.saveState();
+      if (window.showFizzyToast) {
+        window.showFizzyToast("Liquid Theme Applied! 🧪", `Applied theme: ${themeName}.`, "info");
       }
       return true;
     }

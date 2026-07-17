@@ -69,9 +69,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="styles/main.css?v=9">
-  <link rel="stylesheet" href="styles/components.css?v=9">
-  <link rel="stylesheet" href="styles/animations.css?v=9">
+  <link rel="stylesheet" href="styles/main.css?v=11">
+  <link rel="stylesheet" href="styles/components.css?v=11">
+  <link rel="stylesheet" href="styles/animations.css?v=11">
 </head>
 <body>
 
@@ -279,6 +279,158 @@
       </aside>
 
     </div>
+
+    <!-- Bottom Control Deck (Profile & Upgrades Shop Side-by-Side) -->
+    <div class="bottom-control-deck">
+      
+      <!-- User Profile Hub Card -->
+      <div class="clay-card profile-hub-card">
+        <div class="card-header">
+          <h4>Lab Station Profile</h4>
+          <span class="badge-pill">Station #092</span>
+        </div>
+        
+        <div class="profile-setup" id="profileSetupSec">
+          <div class="profile-input-group">
+            <input type="text" id="researcherNameInput" placeholder="Enter Researcher Name" maxlength="15">
+            <button class="action-btn" id="saveProfileBtn">Log In</button>
+          </div>
+        </div>
+        
+        <div class="profile-display hidden" id="profileDisplaySec">
+          <div class="display-header">
+            <span class="researcher-title">🔬 Researcher <span id="researcherNameText">Guest</span></span>
+            <button class="edit-btn-text" id="editProfileBtn">✏️ Edit Name</button>
+          </div>
+          <div class="lifetime-stats-grid">
+            <div class="stat-box">
+              <span class="stat-num" id="statGoalsPopped">0</span>
+              <span class="stat-lbl">Goals Popped</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-num" id="statCoolants">0</span>
+              <span class="stat-lbl">Coolants</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-num" id="statStreakRecord">0d</span>
+              <span class="stat-lbl">Streak Record</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-num" id="statGoldSpent">0</span>
+              <span class="stat-lbl">Gold Spent</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="customizer-divider"></div>
+
+        <!-- Liquid Customizer Shop -->
+        <div class="liquid-shop-section">
+          <h5>Beaker Fluid Customizer</h5>
+          <p class="section-desc">Spend Fizzy Gold to unlock custom glowing fluid wave aesthetics:</p>
+          
+          <div class="fluid-themes-grid">
+            <!-- Default Peach -->
+            <div class="fluid-theme-item active" data-theme="peach">
+              <div class="theme-preview wave-peach"></div>
+              <div class="theme-meta">
+                <span class="theme-title">Peach Fizz</span>
+                <span class="theme-cost">Default</span>
+              </div>
+            </div>
+            
+            <!-- Neon Lime -->
+            <div class="fluid-theme-item locked" data-theme="lime" data-cost="80">
+              <div class="theme-preview wave-lime"></div>
+              <div class="theme-meta">
+                <span class="theme-title">Neon Lime</span>
+                <span class="theme-cost">80g</span>
+              </div>
+            </div>
+
+            <!-- Royal Purple -->
+            <div class="fluid-theme-item locked" data-theme="purple" data-cost="150">
+              <div class="theme-preview wave-purple"></div>
+              <div class="theme-meta">
+                <span class="theme-title">Royal Purple</span>
+                <span class="theme-cost">150g</span>
+              </div>
+            </div>
+
+            <!-- Cherry Blast -->
+            <div class="fluid-theme-item locked" data-theme="cherry" data-cost="100">
+              <div class="theme-preview wave-cherry"></div>
+              <div class="theme-meta">
+                <span class="theme-title">Cherry Blast</span>
+                <span class="theme-cost">100g</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Upgrades Shop Card -->
+      <div class="clay-card shop-card">
+        <div class="card-header">
+          <h4>Soda Flavor Lab</h4>
+          <span class="badge-pill">Shop</span>
+        </div>
+        
+        <div class="active-modifiers-section" id="activeModifiersSection">
+          <!-- Render active mod countdowns dynamically -->
+        </div>
+
+        <div class="shop-items-list">
+          
+          <!-- Streak Shield -->
+          <div class="shop-item">
+            <div class="item-icon-container bg-shield">🛡️</div>
+            <div class="item-details">
+              <div class="item-name-row">
+                <span class="item-title">Streak Shield</span>
+                <span class="item-badge" id="shieldCount">0 owned</span>
+              </div>
+              <p class="item-desc">Auto-saves streak if you miss a day.</p>
+              <button class="buy-btn" data-item="streakShield">Buy <span class="price-val">150g</span></button>
+            </div>
+          </div>
+
+          <!-- Pressure Regulator -->
+          <div class="shop-item">
+            <div class="item-icon-container bg-regulator">⚙️</div>
+            <div class="item-details">
+              <div class="item-name-row">
+                <span class="item-title">Pressure Reg.</span>
+                <span class="item-badge" id="regulatorCount">0 owned</span>
+              </div>
+              <p class="item-desc">-20% PSI rise rate for 24h.</p>
+              <div class="item-actions">
+                <button class="buy-btn" data-item="pressureRegulator">Buy <span class="price-val">100g</span></button>
+                <button class="use-btn" data-item="pressureRegulator" disabled>Activate</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Gold Carbonator -->
+          <div class="shop-item">
+            <div class="item-icon-container bg-carbonator">🧪</div>
+            <div class="item-details">
+              <div class="item-name-row">
+                <span class="item-title">Gold Carbonator</span>
+                <span class="item-badge" id="carbonatorCount">0 owned</span>
+              </div>
+              <p class="item-desc">2x Gold multiplier for 12h.</p>
+              <div class="item-actions">
+                <button class="buy-btn" data-item="goldCarbonator">Buy <span class="price-val">200g</span></button>
+                <button class="use-btn" data-item="goldCarbonator" disabled>Activate</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
   </div>
 
   <!-- GOAL CREATION MODAL -->
@@ -433,10 +585,10 @@
   <!-- 3D Bubbly Toast Notification Container -->
   <div id="toastContainer" class="toast-container"></div>
 
-  <script src="js/store.js?v=9"></script>
-  <script src="js/audio.js?v=9"></script>
-  <script src="js/physics.js?v=9"></script>
-  <script src="js/components/focusPump.js?v=9"></script>
-  <script src="js/app.js?v=9"></script>
+  <script src="js/store.js?v=11"></script>
+  <script src="js/audio.js?v=11"></script>
+  <script src="js/physics.js?v=11"></script>
+  <script src="js/components/focusPump.js?v=11"></script>
+  <script src="js/app.js?v=11"></script>
 </body>
 </html>
