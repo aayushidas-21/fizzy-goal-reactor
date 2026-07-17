@@ -232,12 +232,20 @@ class FizzyStoreClass {
       const timeLeft = goal.deadline - now;
 
       if (timeLeft <= 0) {
-        // Explodes!
-        goal.popped = true;
-        goal.pressure = 100;
-        anyPoppedThisTick.push(goal);
-        // Stability hit
-        this.state.stability = Math.max(0, this.state.stability - (15 * goal.weight));
+        if (!goal.isExploding) {
+          goal.isExploding = true;
+          goal.explosionStartTime = now;
+          goal.pressure = 100;
+        }
+
+        // Wait 2.5 seconds (2500ms) for the bubble to rise to the top center and shake violently before popping
+        if (now - goal.explosionStartTime >= 2500) {
+          goal.popped = true;
+          goal.isExploding = false;
+          anyPoppedThisTick.push(goal);
+          // Stability hit
+          this.state.stability = Math.max(0, this.state.stability - (15 * goal.weight));
+        }
         return;
       }
 

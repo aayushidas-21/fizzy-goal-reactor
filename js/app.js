@@ -215,13 +215,34 @@ function initApp() {
 
     // Trigger popup overlay if any bubble exploded this tick
     if (poppedList && poppedList.length > 0) {
+      // Spawn massive explosion visual at the top center of the beaker
+      poppedList.forEach(g => {
+        if (reactor) {
+          const rx = reactor.width / 2;
+          const ry = 45;
+          // Spawn multiple layers of particles and steam
+          reactor.createPopVisual(rx, ry, g.flavor);
+          reactor.createPopVisual(rx, ry, g.flavor); // double layer for drama
+          reactor.createPopVisual(rx, ry, 'white');  // extra highlight sparks
+          reactor.createValveReleaseVisual(rx, ry);
+          reactor.shakeReactor();
+        }
+      });
       triggerSodaDisaster(poppedList);
     }
   }, 1000);
 
   // --- DISASTER POP MANAGEMENT ---
   function triggerSodaDisaster(poppedList) {
+    FizzyAudio.playSiren();
     FizzyAudio.playFail();
+
+    // Trigger screen shake animation on document body
+    document.body.style.animation = 'screenShake 0.4s ease-in-out 3';
+    setTimeout(() => {
+      document.body.style.animation = FizzyStore.state.stability <= 35 ? 'panicVignette 2s infinite ease-in-out' : 'none';
+    }, 1200);
+
     splashOverlay.classList.remove('hidden');
     
     // Clear old stains and hide instruction caption immediately

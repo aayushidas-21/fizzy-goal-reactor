@@ -197,6 +197,10 @@ class FizzyReactor {
         this.bubbles.push(b);
       }
 
+      // Update runtime parameters
+      b.pressure = g.pressure || 0;
+      b.isExploding = g.isExploding || false;
+
       // Create DOM element if not exist
       if (!this.bubbleMap.has(g.id)) {
         const bubbleEl = document.createElement('button');
@@ -275,9 +279,28 @@ class FizzyReactor {
       const b1 = this.bubbles[i];
 
       // Add buoyancy (Y) and horizontal centering (X) restorative forces
+      let targetY = b1.targetY;
+      let centeringMultiplier = 0.012;
+      let buoyancyMultiplier = 0.015;
+
+      if (b1.isExploding) {
+        // Pull strongly to the top center of the beaker!
+        targetY = 45;
+        centeringMultiplier = 0.08;
+        buoyancyMultiplier = 0.08;
+        
+        // Add violent shake
+        b1.vx += (Math.random() - 0.5) * 5.0;
+        b1.vy += (Math.random() - 0.5) * 5.0;
+      } else if (b1.pressure >= 80) {
+        // Mild warning shake
+        b1.vx += (Math.random() - 0.5) * 0.8;
+        b1.vy += (Math.random() - 0.5) * 0.8;
+      }
+
       const centerX = this.width / 2;
-      const forceX = (centerX - b1.x) * 0.012; // gentle horizontal pull
-      const forceY = (b1.targetY - b1.y) * 0.015;
+      const forceX = (centerX - b1.x) * centeringMultiplier;
+      const forceY = (targetY - b1.y) * buoyancyMultiplier;
       b1.vx += forceX;
       b1.vy += forceY;
 
