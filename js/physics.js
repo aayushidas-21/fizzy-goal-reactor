@@ -300,7 +300,6 @@ class FizzyReactor {
       b1.y += b1.vy;
 
       // Circular Reactor Core bounds
-      const centerX = this.width / 2;
       const centerY = this.height / 2;
       const coreRadius = (this.width / 2) - 16; // account for borders
 
