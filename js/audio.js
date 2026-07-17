@@ -4,6 +4,7 @@ class BubblyAudioEngine {
   constructor() {
     this.ctx = null;
     this.muted = false;
+    this.boilingInterval = null;
   }
 
   init() {
@@ -194,6 +195,48 @@ class BubblyAudioEngine {
 
     osc.start();
     osc.stop(now + 0.4);
+  }
+
+  startBoiling() {
+    if (this.boilingInterval) return;
+    this.resume();
+    
+    this.boilingInterval = setInterval(() => {
+      if (!this.ctx || this.muted) return;
+      
+      // Synthesize small organic ambient bubble sounds
+      try {
+        const osc = this.ctx.createOscillator();
+        const gainNode = this.ctx.createGain();
+        
+        const startFreq = 120 + Math.random() * 220;
+        const endFreq = startFreq * (1.5 + Math.random() * 0.7);
+        const duration = 0.05 + Math.random() * 0.08;
+        
+        osc.type = Math.random() > 0.4 ? 'sine' : 'triangle';
+        osc.frequency.setValueAtTime(startFreq, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(endFreq, this.ctx.currentTime + duration - 0.01);
+        
+        // Soft ambient volume level
+        gainNode.gain.setValueAtTime(0.012 + Math.random() * 0.015, this.ctx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+        
+        osc.connect(gainNode);
+        gainNode.connect(this.ctx.destination);
+        
+        osc.start();
+        osc.stop(this.ctx.currentTime + duration);
+      } catch (e) {
+        // fail silently
+      }
+    }, 150);
+  }
+
+  stopBoiling() {
+    if (this.boilingInterval) {
+      clearInterval(this.boilingInterval);
+      this.boilingInterval = null;
+    }
   }
 }
 

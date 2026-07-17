@@ -114,6 +114,14 @@ function initApp() {
 
   // --- LOCAL STORE SYNCHRONIZATION ---
   function updateUI(state) {
+    // Ambient boiling loop when chamber is empty
+    const hasActiveGoals = state.goals.some(g => !g.completed && !g.popped);
+    if (!hasActiveGoals) {
+      FizzyAudio.startBoiling();
+    } else {
+      FizzyAudio.stopBoiling();
+    }
+
     // 1. Level & XP
     playerLevel.innerText = `LV ${state.level}`;
     const xpNeeded = state.level * 100;
