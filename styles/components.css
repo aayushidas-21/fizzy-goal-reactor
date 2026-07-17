@@ -477,10 +477,46 @@
 }
 
 .wallet-card {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+  transform-style: preserve-3d;
+}
+
+.wallet-header-row {
+  display: flex;
+  justify-content: center;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+  padding-bottom: 8px;
+}
+
+.wallet-body-row {
+  display: flex;
   flex-direction: row;
   align-items: center;
   gap: 16px;
-  transform-style: preserve-3d;
+}
+
+.profile-shortcut-link {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--color-secondary);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  letter-spacing: 0.3px;
+  background: rgba(0, 229, 255, 0.05);
+  border: 1.5px solid rgba(0, 229, 255, 0.15);
+  border-radius: 8px;
+  padding: 4px 10px;
+  text-align: center;
+  width: 100%;
+}
+
+.profile-shortcut-link:hover {
+  background: rgba(0, 229, 255, 0.15);
+  border-color: rgba(0, 229, 255, 0.35);
+  color: #33f0ff;
+  transform: translateY(-1px);
 }
 
 .wallet-icon {

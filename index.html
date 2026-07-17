@@ -69,9 +69,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="styles/main.css?v=13">
-  <link rel="stylesheet" href="styles/components.css?v=13">
-  <link rel="stylesheet" href="styles/animations.css?v=13">
+  <link rel="stylesheet" href="styles/main.css?v=14">
+  <link rel="stylesheet" href="styles/components.css?v=14">
+  <link rel="stylesheet" href="styles/animations.css?v=14">
 </head>
 <body>
 
@@ -178,10 +178,15 @@
       <aside class="dashboard-panel panel-right">
         <!-- Soda Tokens Wallet -->
         <div class="clay-card wallet-card">
-          <div class="wallet-icon">🪙</div>
-          <div class="wallet-balance">
-            <span class="balance-amount" id="playerTokens">50</span>
-            <span class="balance-label">Fizzy Gold</span>
+          <div class="wallet-header-row">
+            <a href="#profileHubCard" class="profile-shortcut-link">Researcher's Goal Profile</a>
+          </div>
+          <div class="wallet-body-row">
+            <div class="wallet-icon">🪙</div>
+            <div class="wallet-balance">
+              <span class="balance-amount" id="playerTokens">50</span>
+              <span class="balance-label">Fizzy Gold</span>
+            </div>
           </div>
         </div>
 
@@ -223,7 +228,7 @@
     <div class="bottom-control-deck">
       
       <!-- User Profile Hub Card -->
-      <div class="clay-card profile-hub-card">
+      <div class="clay-card profile-hub-card" id="profileHubCard">
         <div class="card-header">
           <h4>Lab Station Profile</h4>
           <span class="badge-pill">Station #092</span>
@@ -524,10 +529,10 @@
   <!-- 3D Bubbly Toast Notification Container -->
   <div id="toastContainer" class="toast-container"></div>
 
-  <script src="js/store.js?v=13"></script>
-  <script src="js/audio.js?v=13"></script>
-  <script src="js/physics.js?v=13"></script>
-  <script src="js/components/focusPump.js?v=13"></script>
-  <script src="js/app.js?v=13"></script>
+  <script src="js/store.js?v=14"></script>
+  <script src="js/audio.js?v=14"></script>
+  <script src="js/physics.js?v=14"></script>
+  <script src="js/components/focusPump.js?v=14"></script>
+  <script src="js/app.js?v=14"></script>
 </body>
 </html>
