@@ -453,64 +453,61 @@ function initApp() {
     // Hide wiping cloth initially until mouse moves
     wipingCloth.classList.add('hidden');
     
-    // Wait 3 seconds showing only the glitch title, then show caption and spawn stains
-    disasterTimeout = setTimeout(() => {
-      splashCaption.classList.remove('hidden');
+    // Show instruction caption and spawn interactive foam stains immediately
+    splashCaption.classList.remove('hidden');
+    
+    const stainCount = 10 * poppedList.length;
+    for (let i = 0; i < stainCount; i++) {
+      const stain = document.createElement('div');
+      stain.className = 'foam-stain';
       
-      // Spawn interactive foam stains on the screen
-      const stainCount = 10 * poppedList.length;
-      for (let i = 0; i < stainCount; i++) {
-        const stain = document.createElement('div');
-        stain.className = 'foam-stain';
+      const size = 60 + Math.random() * 100;
+      stain.style.width = `${size}px`;
+      stain.style.height = `${size}px`;
+      
+      // Random coordinates (ensuring clickability)
+      stain.style.left = `${Math.random() * (window.innerWidth - size)}px`;
+      stain.style.top = `${Math.random() * (window.innerHeight - size)}px`;
+      
+      // Drifting float animation with random duration and phase offset
+      stain.style.animation = `foamFloat ${8 + Math.random() * 8}s infinite ease-in-out`;
+      stain.style.animationDelay = `${Math.random() * -10}s`;
+
+      // Sweep/wipe mechanics: trigger cleanup on hover (mouseenter)
+      stain.addEventListener('mouseenter', () => {
+        if (stain.classList.contains('wiping')) return;
+        stain.classList.add('wiping');
         
-        const size = 60 + Math.random() * 100;
-        stain.style.width = `${size}px`;
-        stain.style.height = `${size}px`;
+        FizzyAudio.playPop(); // play wiping sound
         
-        // Random coordinates (ensuring clickability)
-        stain.style.left = `${Math.random() * (window.innerWidth - size)}px`;
-        stain.style.top = `${Math.random() * (window.innerHeight - size)}px`;
+        // Spawn miniature pop bubbles
+        const rect = stain.getBoundingClientRect();
+        if (reactor) {
+          reactor.createPopVisual(rect.left + size/2, rect.top + size/2, poppedList[0].flavor);
+        }
         
-        // Drifting float animation with random duration and phase offset
-        stain.style.animation = `foamFloat ${8 + Math.random() * 8}s infinite ease-in-out`;
-        stain.style.animationDelay = `${Math.random() * -10}s`;
-  
-        // Sweep/wipe mechanics: trigger cleanup on hover (mouseenter)
-        stain.addEventListener('mouseenter', () => {
-          if (stain.classList.contains('wiping')) return;
-          stain.classList.add('wiping');
+        // Shrink and fade away
+        stain.style.transform = 'scale(0) rotate(180deg)';
+        stain.style.opacity = '0';
+        stain.style.transition = 'transform 0.4s ease-out, opacity 0.4s ease-out';
+        
+        setTimeout(() => {
+          stain.remove();
+          FizzyStore.cleanFoamStain(); // Restores stability by 5%
           
-          FizzyAudio.playPop(); // play wiping sound
-          
-          // Spawn miniature pop bubbles
-          const rect = stain.getBoundingClientRect();
-          if (reactor) {
-            reactor.createPopVisual(rect.left + size/2, rect.top + size/2, poppedList[0].flavor);
+          // If all stains are wiped away, close disaster overlay
+          const activeStains = Array.from(foamStainsContainer.children).filter(el => !el.classList.contains('wiping'));
+          if (activeStains.length === 0) {
+            splashOverlay.classList.add('hidden');
+            wipingCloth.classList.add('hidden');
+            poppedList.forEach(g => FizzyStore.deleteGoal(g.id));
+            FizzyAudio.playSuccess();
           }
-          
-          // Shrink and fade away
-          stain.style.transform = 'scale(0) rotate(180deg)';
-          stain.style.opacity = '0';
-          stain.style.transition = 'transform 0.4s ease-out, opacity 0.4s ease-out';
-          
-          setTimeout(() => {
-            stain.remove();
-            FizzyStore.cleanFoamStain(); // Restores stability by 5%
-            
-            // If all stains are wiped away, close disaster overlay
-            const activeStains = Array.from(foamStainsContainer.children).filter(el => !el.classList.contains('wiping'));
-            if (activeStains.length === 0) {
-              splashOverlay.classList.add('hidden');
-              wipingCloth.classList.add('hidden');
-              poppedList.forEach(g => FizzyStore.deleteGoal(g.id));
-              FizzyAudio.playSuccess();
-            }
-          }, 400);
-        });
-        
-        foamStainsContainer.appendChild(stain);
-      }
-    }, 3000);
+        }, 400);
+      });
+      
+      foamStainsContainer.appendChild(stain);
+    }
   }
 
   // --- GOAL CREATION ---

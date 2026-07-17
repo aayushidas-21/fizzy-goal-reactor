@@ -200,6 +200,16 @@ class FizzyReactor {
       // Update runtime parameters
       b.pressure = g.pressure || 0;
       b.isExploding = g.isExploding || false;
+      
+      if (b.isExploding) {
+        if (b.lockX === undefined) {
+          b.lockX = b.x;
+          b.lockY = b.y;
+        }
+      } else {
+        delete b.lockX;
+        delete b.lockY;
+      }
 
       // Dynamic inflation scaling based on pressure and exploding state
       const baseRadius = g.weight === 1 ? 36 : g.weight === 2 ? 50 : 64;
@@ -296,6 +306,15 @@ class FizzyReactor {
     for (let i = 0; i < length; i++) {
       const b1 = this.bubbles[i];
 
+      if (b1.isExploding && b1.lockX !== undefined && b1.lockY !== undefined) {
+        const shakeIntensity = 2.5;
+        b1.x = b1.lockX + (Math.random() - 0.5) * shakeIntensity;
+        b1.y = b1.lockY + (Math.random() - 0.5) * shakeIntensity;
+        b1.vx = 0;
+        b1.vy = 0;
+        continue;
+      }
+
       // Add buoyancy (Y) and horizontal centering (X) restorative forces
       let targetY = b1.targetY;
       let centeringMultiplier = 0.012;
@@ -366,6 +385,9 @@ class FizzyReactor {
       // Bubble collisions (resolve overlaps)
       for (let j = i + 1; j < length; j++) {
         const b2 = this.bubbles[j];
+        if (b1.isExploding || b2.isExploding) {
+          continue;
+        }
         const dx = b2.x - b1.x;
         const dy = b2.y - b1.y;
         const dist = Math.sqrt(dx*dx + dy*dy);
