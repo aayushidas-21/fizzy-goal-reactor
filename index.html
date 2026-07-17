@@ -69,9 +69,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="styles/main.css?v=8">
-  <link rel="stylesheet" href="styles/components.css?v=8">
-  <link rel="stylesheet" href="styles/animations.css?v=8">
+  <link rel="stylesheet" href="styles/main.css?v=9">
+  <link rel="stylesheet" href="styles/components.css?v=9">
+  <link rel="stylesheet" href="styles/animations.css?v=9">
 </head>
 <body>
 
@@ -155,66 +155,6 @@
             </div>
           </div>
         </div>
-      </aside>
-
-      <!-- Center: Reactor Globe -->
-      <main class="reactor-center">
-        <div class="reactor-sphere-outer">
-          <div class="reactor-sphere-rim"></div>
-          <!-- Physics Container -->
-          <div class="reactor-sphere-body" id="reactorChamber">
-            <canvas id="fluidCanvas"></canvas>
-            <!-- Goal Bubble Overlay -->
-            <div class="bubble-layer" id="bubbleLayer"></div>
-            <!-- Bubbly sloshing wave at bottom of sphere -->
-            <div class="sphere-wave wave-1"></div>
-            <div class="sphere-wave wave-2"></div>
-          </div>
-          <div class="reactor-sphere-stand"></div>
-        </div>
-      </main>
-
-      <!-- Right Panel: Active Feed & Creation -->
-      <aside class="dashboard-panel panel-right">
-        <!-- Soda Tokens Wallet -->
-        <div class="clay-card wallet-card">
-          <div class="wallet-icon">🪙</div>
-          <div class="wallet-balance">
-            <span class="balance-amount" id="playerTokens">50</span>
-            <span class="balance-label">Fizzy Gold</span>
-          </div>
-        </div>
-
-        <!-- Duolingo-style Streak Card -->
-        <div class="clay-card streak-card" id="streakCard">
-          <div class="streak-icon-container">🔥</div>
-          <div class="streak-balance">
-            <span class="balance-amount" id="playerStreak">0 Days</span>
-            <span class="balance-label">Daily Streak</span>
-          </div>
-        </div>
-
-        <!-- Inject Goal Button -->
-        <button class="inject-trigger-btn" id="openCreateModalBtn">
-          <span class="btn-ripple"></span>
-          <span class="trigger-emoji">🫧</span>
-          <span class="trigger-text">Inject Goal Bubble</span>
-        </button>
-
-        <!-- Active Pressures Feed -->
-        <div class="clay-card feed-card">
-          <div class="card-header">
-            <h4>Bubble Pressures</h4>
-            <span class="badge-pill" id="activeBubbleCount">0 Active</span>
-          </div>
-          
-          <div class="bubble-feed-list" id="bubbleFeedList">
-            <div class="feed-empty-state" id="feedEmptyState">
-              <span class="empty-emoji">🫧</span>
-              <p>No active goal bubbles. Inject one to begin!</p>
-            </div>
-          </div>
-        </div>
 
         <!-- Soda Flavor Lab (Upgrades Shop) -->
         <div class="clay-card shop-card">
@@ -274,6 +214,66 @@
               </div>
             </div>
 
+          </div>
+        </div>
+      </aside>
+
+      <!-- Center: Reactor Globe -->
+      <main class="reactor-center">
+        <div class="reactor-sphere-outer">
+          <div class="reactor-sphere-rim"></div>
+          <!-- Physics Container -->
+          <div class="reactor-sphere-body" id="reactorChamber">
+            <canvas id="fluidCanvas"></canvas>
+            <!-- Goal Bubble Overlay -->
+            <div class="bubble-layer" id="bubbleLayer"></div>
+            <!-- Bubbly sloshing wave at bottom of sphere -->
+            <div class="sphere-wave wave-1"></div>
+            <div class="sphere-wave wave-2"></div>
+          </div>
+          <div class="reactor-sphere-stand"></div>
+        </div>
+      </main>
+
+      <!-- Right Panel: Active Feed & Creation -->
+      <aside class="dashboard-panel panel-right">
+        <!-- Soda Tokens Wallet -->
+        <div class="clay-card wallet-card">
+          <div class="wallet-icon">🪙</div>
+          <div class="wallet-balance">
+            <span class="balance-amount" id="playerTokens">50</span>
+            <span class="balance-label">Fizzy Gold</span>
+          </div>
+        </div>
+
+        <!-- Duolingo-style Streak Card -->
+        <div class="clay-card streak-card" id="streakCard">
+          <div class="streak-icon-container">🔥</div>
+          <div class="streak-balance">
+            <span class="balance-amount" id="playerStreak">0 Days</span>
+            <span class="balance-label">Daily Streak</span>
+          </div>
+        </div>
+
+        <!-- Inject Goal Button -->
+        <button class="inject-trigger-btn" id="openCreateModalBtn">
+          <span class="btn-ripple"></span>
+          <span class="trigger-emoji">🫧</span>
+          <span class="trigger-text">Inject Goal Bubble</span>
+        </button>
+
+        <!-- Active Pressures Feed -->
+        <div class="clay-card feed-card">
+          <div class="card-header">
+            <h4>Bubble Pressures</h4>
+            <span class="badge-pill" id="activeBubbleCount">0 Active</span>
+          </div>
+          
+          <div class="bubble-feed-list" id="bubbleFeedList">
+            <div class="feed-empty-state" id="feedEmptyState">
+              <span class="empty-emoji">🫧</span>
+              <p>No active goal bubbles. Inject one to begin!</p>
+            </div>
           </div>
         </div>
       </aside>
@@ -433,10 +433,10 @@
   <!-- 3D Bubbly Toast Notification Container -->
   <div id="toastContainer" class="toast-container"></div>
 
-  <script src="js/store.js?v=8"></script>
-  <script src="js/audio.js?v=8"></script>
-  <script src="js/physics.js?v=8"></script>
-  <script src="js/components/focusPump.js?v=8"></script>
-  <script src="js/app.js?v=8"></script>
+  <script src="js/store.js?v=9"></script>
+  <script src="js/audio.js?v=9"></script>
+  <script src="js/physics.js?v=9"></script>
+  <script src="js/components/focusPump.js?v=9"></script>
+  <script src="js/app.js?v=9"></script>
 </body>
 </html>
