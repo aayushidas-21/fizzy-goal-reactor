@@ -1,5 +1,38 @@
 // APPLICATION ORCHESTRATION AND CONTROLLERS (APP)
 
+// Global Toast Notification Helper (3D effects)
+window.showFizzyToast = function(title, desc, type = 'info') {
+  const container = document.getElementById('toastContainer');
+  if (!container) return;
+  
+  const toast = document.createElement('div');
+  toast.className = `fizzy-toast toast-${type}`;
+  
+  let icon = '🫧';
+  if (type === 'gold') icon = '🪙';
+  else if (type === 'success') icon = '🏆';
+  else if (type === 'streak') icon = '🔥';
+  else if (type === 'info') icon = '🧪';
+  
+  toast.innerHTML = `
+    <div class="toast-icon-wrapper">${icon}</div>
+    <div class="toast-body">
+      <div class="toast-title">${title}</div>
+      <div class="toast-desc">${desc}</div>
+    </div>
+  `;
+  
+  container.appendChild(toast);
+  
+  // Auto dismiss after 4 seconds
+  setTimeout(() => {
+    toast.classList.add('toast-fadeout');
+    toast.addEventListener('animationend', () => {
+      toast.remove();
+    });
+  }, 4000);
+};
+
 function initApp() {
   const FizzyStore = window.FizzyStore;
   const FizzyAudio = window.FizzyAudio;

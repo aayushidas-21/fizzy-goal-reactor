@@ -131,6 +131,9 @@ class FizzyStoreClass {
       xpGained += baseReward;
       tokensGained += Math.round(baseReward / 10);
       this.recordDailyProgress(); // Reward daily streak
+      if (window.showFizzyToast) {
+        window.showFizzyToast("Goal Completed! 🏆", `"${goal.title}" fully defused!`, "success");
+      }
     } else {
       goal.completed = false;
     }
@@ -158,12 +161,19 @@ class FizzyStoreClass {
       xpNeeded = this.state.level * 100;
       leveledUp = true;
       this.state.tokens += this.state.level * 10; // Level up gold reward
+      if (window.showFizzyToast) {
+        window.showFizzyToast("Rank Level Up! 🧪", `Reached Level ${this.state.level}! +${this.state.level * 10} Gold!`, "info");
+      }
     }
     return leveledUp;
   }
 
   addTokens(amount) {
+    if (amount <= 0) return;
     this.state.tokens += amount;
+    if (window.showFizzyToast) {
+      window.showFizzyToast("Fizzy Gold Added! 🪙", `+${amount} Gold credited to your vault.`, "gold");
+    }
   }
 
   useTokens(amount) {
@@ -320,6 +330,9 @@ class FizzyStoreClass {
       this.state.lastActiveDate = todayStr;
       this.state.streakHighscore = Math.max(this.state.streakHighscore, this.state.streak);
       this.saveState();
+      if (window.showFizzyToast) {
+        window.showFizzyToast("Streak Started! 🚀", "Day 1 active! Keep the fire burning!", "streak");
+      }
       return { streakIncreased: true, newStreak: 1, reward: 20 };
     }
     
@@ -343,12 +356,18 @@ class FizzyStoreClass {
       rewardGold = Math.min(50, rewardGold); // cap at 50g per day
       this.state.tokens += rewardGold;
       streakIncreased = true;
+      if (window.showFizzyToast) {
+        window.showFizzyToast("Streak Maintained! 🔥", `Day ${this.state.streak} consecutive! Keep it up!`, "streak");
+      }
     } else {
       // Broken streak! Restart at 1
       this.state.streak = 1;
       rewardGold = 20;
       this.state.tokens += rewardGold;
       streakIncreased = true;
+      if (window.showFizzyToast) {
+        window.showFizzyToast("Streak Restarted! 🚀", "Day 1 active! Don't let it break again!", "streak");
+      }
     }
     
     this.state.lastActiveDate = todayStr;
